@@ -1,67 +1,199 @@
-import express from "express";
-import cors from "cors";
-import path from "path";
-import { fileURLToPath } from "url";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import authRoutes from "./routes/auth.routes.js";
-import cycleRoutes from "./routes/cycle.routes.js";
-import favouriteRoutes from "./routes/favourite.routes.js";
-import cartRoutes from "./routes/cart.routes.js";
-import orderRoutes from "./routes/order.routes.js";
+// ================= COMPONENTS =================
 
-import notFound from "./middleware/notFound.middleware.js";
-import errorMiddleware from "./middleware/error.middleware.js";
+import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
+import GuestRoute from "./components/GuestRoute";
+import AdminRoute from "./components/AdminRoute";
+import Footer from "./components/Footer";
 
-const app = express();
+// ================= PUBLIC PAGES =================
 
-// ================= PATH SETUP =================
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Cycles from "./pages/Cycles";
+import CycleDetails from "./pages/CycleDetails";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// ================= USER PAGES =================
 
-// ================= MIDDLEWARE =================
+import Favourites from "./pages/Favourites";
+import Cart from "./pages/Cart";
+import Checkout from "./pages/Checkout";
+import Orders from "./pages/Orders";
+import OrderDetails from "./pages/OrderDetails";
 
-app.use(cors());
+// ================= ADMIN PAGES =================
 
-app.use(express.json());
+import AdminCycles from "./pages/AdminCycles";
+import AddCycle from "./pages/AddCycle";
+import EditCycle from "./pages/EditCycle";
 
-// ================= STATIC UPLOADS =================
+function App() {
+  return (
+    <BrowserRouter>
 
-// Images are stored in:
-// server/uploads/
+      {/* ================= NAVBAR ================= */}
 
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "../uploads"))
-);
+      <Navbar />
 
-// ================= HOME =================
+      <Routes>
 
-app.get("/", (req, res) => {
-  res.json({
-    success: true,
-    message: "Cycle Shop API is running",
-  });
-});
+        {/* ================================================= */}
+        {/* PUBLIC ROUTES */}
+        {/* ================================================= */}
 
-// ================= ROUTES =================
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-app.use("/api/auth", authRoutes);
+        <Route
+          path="/cycles"
+          element={<Cycles />}
+        />
 
-app.use("/api/cycles", cycleRoutes);
+      
+        <Route
+          path="/about"
+          element={<About />}
+        />
 
-app.use("/api/favourites", favouriteRoutes);
+        <Route
+          path="/contact"
+          element={<Contact />}
+        />
+        <Route
+          path="/cycles/:id"
+          element={<CycleDetails />}
+        />
 
-app.use("/api/cart", cartRoutes);
 
-app.use("/api/orders", orderRoutes);
+        {/* ================================================= */}
+        {/* GUEST ROUTES */}
+        {/* ================================================= */}
 
-// ================= 404 =================
+        <Route element={<GuestRoute />}>
 
-app.use(notFound);
+          <Route
+            path="/login"
+            element={<Login />}
+          />
 
-// ================= ERROR =================
+          <Route
+            path="/register"
+            element={<Register />}
+          />
 
-app.use(errorMiddleware);
+        </Route>
 
-export default app;
+
+        {/* ================================================= */}
+        {/* PROTECTED USER ROUTES */}
+        {/* ================================================= */}
+
+        <Route element={<ProtectedRoute />}>
+
+          <Route
+            path="/favourites"
+            element={<Favourites />}
+          />
+
+          <Route
+            path="/cart"
+            element={<Cart />}
+          />
+
+          <Route
+            path="/checkout"
+            element={<Checkout />}
+          />
+
+          <Route
+            path="/orders"
+            element={<Orders />}
+          />
+
+          <Route
+            path="/orders/:id"
+            element={<OrderDetails />}
+          />
+
+        </Route>
+
+
+        {/* ================================================= */}
+        {/* ADMIN ROUTES */}
+        {/* ================================================= */}
+
+        <Route element={<AdminRoute />}>
+
+          {/* Manage Cycles */}
+
+          <Route
+            path="/admin/cycles"
+            element={<AdminCycles />}
+          />
+
+          {/* Add Cycle */}
+
+          <Route
+            path="/admin/cycles/add"
+            element={<AddCycle />}
+          />
+
+          {/* Edit Cycle */}
+
+          <Route
+            path="/admin/cycles/edit/:id"
+            element={<EditCycle />}
+          />
+
+        </Route>
+
+
+        {/* ================================================= */}
+        {/* 404 */}
+        {/* ================================================= */}
+
+        <Route
+          path="*"
+          element={
+            <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-[var(--color-bg)] px-4">
+
+              <div className="text-center">
+
+                <h1 className="text-7xl font-bold text-[var(--color-primary)]">
+                  404
+                </h1>
+
+                <p className="mt-4 text-lg text-[var(--color-text)]">
+                  Page not found
+                </p>
+
+                <button
+                  onClick={() => {
+                    window.location.href = "/";
+                  }}
+                  className="mt-6 rounded-xl bg-[var(--color-primary)] px-6 py-3 font-semibold text-white"
+                >
+                  Go Home
+                </button>
+
+              </div>
+
+            </div>
+          }
+        />
+
+      </Routes>
+
+      <Footer />
+    </BrowserRouter>
+  );
+}
+
+export default App;

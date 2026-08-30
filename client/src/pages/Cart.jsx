@@ -312,7 +312,7 @@ function Cart() {
 
                           <div className="flex w-fit items-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
 
-                            <button
+                            {/* <button
                               disabled={
                                 actionLoading ||
                                 quantity <= 1
@@ -326,13 +326,13 @@ function Cart() {
                               className="flex h-10 w-10 items-center justify-center text-xl font-medium transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
                             >
                               −
-                            </button>
+                            </button> */}
 
                             <span className="flex h-10 min-w-12 items-center justify-center border-x border-gray-200 bg-white px-4 font-bold text-[var(--color-dark-blue)]">
                               {quantity}
                             </span>
 
-                            <button
+                            {/* <button
                               disabled={
                                 actionLoading ||
                                 quantity >= cycle.stock
@@ -346,7 +346,7 @@ function Cart() {
                               className="flex h-10 w-10 items-center justify-center text-xl font-medium transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
                             >
                               +
-                            </button>
+                            </button> */}
 
                           </div>
 

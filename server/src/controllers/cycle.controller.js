@@ -1,5 +1,5 @@
 import Cycle from "../models/Cycle.js";
-import { cycleSchema } from "../validators/cycle.validator.js";
+import { cycleSchema , updateCycleSchema } from "../validators/cycle.validator.js";
 // GET /api/cycles
 // GET /api/cycles?category=Mountain
 const getCycles = async (req, res) => {
@@ -95,7 +95,33 @@ const updateCycle = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const { error, value } = cycleSchema.validate(req.body);
+    // Check cycle exists
+    
+    const existingCycle = await Cycle.findById(id);
+
+    if (!existingCycle) {
+      return res.status(404).json({
+        success: false,
+        message: "Cycle not found",
+      });
+    }
+
+    // Prepare update data
+
+    const cycleData = {
+      ...req.body,
+    };
+
+    // New image selected
+
+    if (req.file) {
+      cycleData.image = req.file.filename;
+    }
+
+    // Validate update data
+
+    const { error, value } =
+      updateCycleSchema.validate(cycleData);
 
     if (error) {
       return res.status(400).json({
@@ -104,6 +130,8 @@ const updateCycle = async (req, res) => {
       });
     }
 
+    // Update cycle
+   
     const cycle = await Cycle.findByIdAndUpdate(
       id,
       value,
@@ -113,25 +141,21 @@ const updateCycle = async (req, res) => {
       }
     );
 
-    if (!cycle) {
-      return res.status(404).json({
-        success: false,
-        message: "Cycle not found",
-      });
-    }
-
     return res.status(200).json({
       success: true,
       message: "Cycle updated successfully",
       cycle,
     });
   } catch (error) {
+    console.error("Update cycle error:", error);
+
     return res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
 
 // delete cycle 
 const deleteCycle = async (req, res) => {

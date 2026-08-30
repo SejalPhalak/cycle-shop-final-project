@@ -441,14 +441,7 @@ function CycleDetails() {
 
               {/* Buy Now */}
 
-              <button
-                onClick={handleBuyNow}
-                disabled={isOutOfStock}
-                className="mt-3 w-full rounded-xl bg-[var(--color-dark-blue)] px-5 py-3.5 font-bold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-[var(--color-primary)] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                ⚡ Buy Now
-              </button>
-
+             
 
               {/* ================= SUCCESS MESSAGE ================= */}
 
