@@ -1,22 +1,20 @@
 import { Link } from "react-router-dom";
 
 function CycleCard({ cycle }) {
-  // ================= IMAGE URL =================
-
-  const apiUrl =
+  const API_URL =
     import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
-  const serverUrl = apiUrl.replace(/\/api\/?$/, "");
+  const SERVER_URL = API_URL.replace(/\/api\/?$/, "");
 
   const imageUrl = cycle?.image
-    ? `${serverUrl}/uploads/${String(cycle.image).replace(/^\/+/, "")}`
+    ? `${SERVER_URL}/uploads/${cycle.image}`
     : "";
 
-  // ================= STOCK =================
+  console.log("Cycle:", cycle?.name);
+  console.log("Image:", cycle?.image);
+  console.log("Image URL:", imageUrl);
 
   const isAvailable = Number(cycle?.stock || 0) > 0;
-
-  // ================= PRICE =================
 
   const formattedPrice =
     typeof cycle?.price === "number"
@@ -26,8 +24,6 @@ function CycleCard({ cycle }) {
   return (
     <div className="group overflow-hidden rounded-2xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
-      {/* ================= IMAGE ================= */}
-
       <Link to={`/cycles/${cycle._id}`}>
         <div className="relative flex h-56 items-center justify-center overflow-hidden bg-[var(--color-bg)]">
 
@@ -36,16 +32,14 @@ function CycleCard({ cycle }) {
               src={imageUrl}
               alt={cycle?.name || "Cycle"}
               className="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-105"
-              onError={(event) => {
-                console.error(
-                  "Cycle image failed:",
-                  imageUrl
-                );
+              onLoad={() => {
+                console.log("IMAGE LOADED:", imageUrl);
+              }}
+              onError={(e) => {
+                console.error("IMAGE ERROR:", imageUrl);
+                e.currentTarget.style.display = "none";
 
-                event.currentTarget.style.display = "none";
-
-                const fallback =
-                  event.currentTarget.nextElementSibling;
+                const fallback = e.currentTarget.nextElementSibling;
 
                 if (fallback) {
                   fallback.classList.remove("hidden");
@@ -53,8 +47,6 @@ function CycleCard({ cycle }) {
               }}
             />
           ) : null}
-
-          {/* Fallback */}
 
           <div
             className={`${
@@ -64,8 +56,6 @@ function CycleCard({ cycle }) {
             🚲
           </div>
 
-          {/* Category */}
-
           <div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-[var(--color-primary)] shadow-sm">
             {cycle?.category || "Cycle"}
           </div>
@@ -73,19 +63,11 @@ function CycleCard({ cycle }) {
         </div>
       </Link>
 
-
-      {/* ================= INFORMATION ================= */}
-
       <div className="p-5">
-
-        {/* Category */}
 
         <p className="mb-2 text-sm font-semibold text-[var(--color-primary)]">
           {cycle?.category || "Cycle"}
         </p>
-
-
-        {/* Name */}
 
         <Link to={`/cycles/${cycle._id}`}>
           <h2 className="line-clamp-1 text-xl font-bold text-[var(--color-dark-blue)] transition hover:text-[var(--color-primary)]">
@@ -93,15 +75,9 @@ function CycleCard({ cycle }) {
           </h2>
         </Link>
 
-
-        {/* Brand */}
-
         <p className="mt-1 text-sm text-[var(--color-text)]">
           Brand: {cycle?.brand || "N/A"}
         </p>
-
-
-        {/* Price + Details */}
 
         <div className="mt-5 flex items-center justify-between gap-3">
 
@@ -117,9 +93,6 @@ function CycleCard({ cycle }) {
           </Link>
 
         </div>
-
-
-        {/* Stock */}
 
         <p
           className={`mt-3 text-sm font-medium ${
