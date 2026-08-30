@@ -27,7 +27,16 @@ return res.status(200).json({
     });
   }
 };
+const totalCycles = cycles.length;
 
+if (totalCycles === 0) {
+  return res.status(200).json({
+    success: true,
+    count: 0,
+    message: "No cycles found",
+    cycles: [],
+  });
+}
 // GET /api/cycles/:id
 const getCycleById = async (req, res) => {
   try {
