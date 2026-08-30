@@ -248,7 +248,7 @@ function Home() {
           <span>•</span>
           <span>SPORTS</span>
           <span>•</span>
-          <span>COMMUTER</span>
+          <span>TRAIL</span>
 
         </div>
 
