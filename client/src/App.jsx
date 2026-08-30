@@ -185,3 +185,6 @@ function App() {
 }
 
 export default App;
+/**
+ * Process component logic for App.jsx
+ */
