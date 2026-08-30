@@ -41,6 +41,15 @@ function Navbar() {
         : "text-gray-700 hover:bg-gray-100"
     }`;
 
+  /* ================= ICON NAV ================= */
+
+  const iconNavClass = ({ isActive }) =>
+    `flex h-11 w-11 items-center justify-center rounded-full text-xl transition-all duration-300 ${
+      isActive
+        ? "bg-[#17171d] text-white shadow-md"
+        : "text-gray-700 hover:bg-gray-100 hover:text-black"
+    }`;
+
   return (
     <nav className="sticky top-0 z-50 border-b border-gray-200/70 bg-white/90 shadow-sm backdrop-blur-xl">
 
@@ -141,6 +150,7 @@ function Navbar() {
         <div className="hidden items-center gap-3 md:flex">
 
           {!isLoggedIn ? (
+
             <>
               {/* Login */}
 
@@ -165,29 +175,59 @@ function Navbar() {
                 Sign Up
               </Link>
             </>
+
           ) : (
+
             <>
-              {/* User */}
+              {/* ================= FAVOURITES ================= */}
+
+              <NavLink
+                to="/favourites"
+                className={iconNavClass}
+                title="Favourites"
+                aria-label="Favourites"
+              >
+                ❤️
+              </NavLink>
+
+
+              {/* ================= CART ================= */}
+
+              <NavLink
+                to="/cart"
+                className={iconNavClass}
+                title="Cart"
+                aria-label="Cart"
+              >
+                🛒
+              </NavLink>
+
+
+              {/* ================= USER ================= */}
 
               <div className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-1.5 shadow-sm">
 
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#ff5722] text-sm font-black text-white">
+
                   {(user?.name || user?.email || "U")
                     .charAt(0)
                     .toUpperCase()}
+
                 </div>
 
                 <span className="max-w-[120px] truncate text-sm font-bold text-[#17171d]">
+
                   {user?.name ||
                     user?.username ||
                     user?.email ||
                     "User"}
+
                 </span>
 
               </div>
 
 
-              {/* Logout */}
+              {/* ================= LOGOUT ================= */}
 
               <button
                 onClick={handleLogout}
@@ -195,7 +235,9 @@ function Navbar() {
               >
                 Logout
               </button>
+
             </>
+
           )}
 
         </div>
@@ -266,10 +308,12 @@ function Navbar() {
             </NavLink>
 
 
-            {/* Logged In Links */}
+            {/* ================= LOGGED IN LINKS ================= */}
 
             {isLoggedIn && (
+
               <>
+
                 <div className="my-2 border-t border-gray-200" />
 
 
@@ -309,6 +353,7 @@ function Navbar() {
                 {/* Admin */}
 
                 {isAdmin && (
+
                   <NavLink
                     to="/admin/cycles"
                     onClick={closeMenu}
@@ -316,20 +361,24 @@ function Navbar() {
                   >
                     ⚙️ Admin
                   </NavLink>
+
                 )}
 
 
-                {/* User Info */}
+                {/* ================= USER INFO ================= */}
 
                 <div className="mt-3 rounded-2xl bg-gray-50 p-4">
 
                   <div className="flex items-center gap-3">
 
                     <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff5722] font-black text-white">
+
                       {(user?.name || user?.email || "U")
                         .charAt(0)
                         .toUpperCase()}
+
                     </div>
+
 
                     <div className="min-w-0">
 
@@ -338,10 +387,12 @@ function Navbar() {
                       </p>
 
                       <p className="truncate text-sm font-bold text-[#17171d]">
+
                         {user?.name ||
                           user?.username ||
                           user?.email ||
                           "User"}
+
                       </p>
 
                     </div>
@@ -359,11 +410,13 @@ function Navbar() {
                   </button>
 
                 </div>
+
               </>
+
             )}
 
 
-            {/* Guest Buttons */}
+            {/* ================= GUEST BUTTONS ================= */}
 
             {!isLoggedIn && (
 
@@ -376,6 +429,7 @@ function Navbar() {
                 >
                   Login
                 </Link>
+
 
                 <Link
                   to="/register"
