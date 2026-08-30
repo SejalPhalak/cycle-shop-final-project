@@ -1,6 +1,12 @@
 import express from "express";
 
-import { getCycles , getCycleById , createCycle , updateCycle , deleteCycle } from "../controllers/cycle.controller.js";
+import {
+  getCycles,
+  getCycleById,
+  createCycle,
+  updateCycle,
+  deleteCycle,
+} from "../controllers/cycle.controller.js";
 
 import authMiddleware from "../middleware/auth.middleware.js";
 import adminMiddleware from "../middleware/admin.middleware.js";
@@ -9,13 +15,15 @@ import upload from "../middleware/upload.js";
 const router = express.Router();
 
 
-// public url
-// get all cycles
-// get cycles by category
+// Public routes
+
 router.get("/", getCycles);
 
+router.get("/:id", getCycleById);
 
-// Admin url
+
+// Admin routes
+
 router.post(
   "/",
   authMiddleware,
@@ -24,7 +32,6 @@ router.post(
   createCycle
 );
 
-router.get("/:id", getCycleById);
 
 router.put(
   "/:id",
@@ -34,10 +41,13 @@ router.put(
   updateCycle
 );
 
+
 router.delete(
   "/:id",
   authMiddleware,
   adminMiddleware,
   deleteCycle
 );
+
+
 export default router;
