@@ -1,43 +1,18 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import { addFavourite } from "../services/favouriteService";
-import { addToCart } from "../services/cartService";
+import {
+  addFavourite,
+} from "../services/favouriteService";
+
+import {
+  addToCart,
+} from "../services/cartService";
+
 import { getCycleById } from "../services/cycleService";
 import { useAuth } from "../context/AuthContext";
 
 import Loader from "../components/Loader";
-
-// =====================================================
-// LOAD ALL LOCAL CYCLE IMAGES
-// =====================================================
-
-const cycleImages = import.meta.glob(
-  "../assets/images/*",
-  {
-    eager: true,
-    query: "?url",
-    import: "default",
-  }
-);
-
-// =====================================================
-// GET IMAGE URL FROM FILE NAME
-// =====================================================
-
-const getCycleImage = (imageName) => {
-  if (!imageName) {
-    return "";
-  }
-
-  const imagePath = `../assets/images/${imageName}`;
-
-  return cycleImages[imagePath] || "";
-};
-
-// =====================================================
-// COMPONENT
-// =====================================================
 
 function CycleDetails() {
   const { id } = useParams();
@@ -45,10 +20,6 @@ function CycleDetails() {
   const navigate = useNavigate();
 
   const { isAuthenticated } = useAuth();
-
-  // ===================================================
-  // STATES
-  // ===================================================
 
   const [cycle, setCycle] = useState(null);
 
@@ -64,9 +35,7 @@ function CycleDetails() {
 
   const [actionError, setActionError] = useState("");
 
-  // ===================================================
-  // FETCH CYCLE
-  // ===================================================
+  // ================= FETCH CYCLE =================
 
   useEffect(() => {
     fetchCycle();
@@ -75,14 +44,11 @@ function CycleDetails() {
   const fetchCycle = async () => {
     try {
       setLoading(true);
-
       setError("");
 
       const response = await getCycleById(id);
 
       setCycle(response.cycle);
-
-      setQuantity(1);
     } catch (error) {
       setError(
         error.response?.data?.message ||
@@ -93,17 +59,7 @@ function CycleDetails() {
     }
   };
 
-  // ===================================================
-  // IMAGE URL
-  // ===================================================
-
-  const cycleImage = cycle
-    ? getCycleImage(cycle.image)
-    : "";
-
-  // ===================================================
-  // INCREASE QUANTITY
-  // ===================================================
+  // ================= INCREASE QUANTITY =================
 
   const increaseQuantity = () => {
     if (cycle && quantity < cycle.stock) {
@@ -111,9 +67,7 @@ function CycleDetails() {
     }
   };
 
-  // ===================================================
-  // DECREASE QUANTITY
-  // ===================================================
+  // ================= DECREASE QUANTITY =================
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -121,34 +75,25 @@ function CycleDetails() {
     }
   };
 
-  // ===================================================
-  // CHECK LOGIN
-  // ===================================================
+  // ================= CHECK LOGIN =================
 
   const requireLogin = () => {
     if (!isAuthenticated) {
       navigate("/login");
-
       return false;
     }
 
     return true;
   };
 
-  // ===================================================
-  // ADD FAVOURITE
-  // ===================================================
+  // ================= ADD FAVOURITE =================
 
   const handleFavourite = async () => {
-    if (!requireLogin()) {
-      return;
-    }
+    if (!requireLogin()) return;
 
     try {
       setActionLoading(true);
-
       setMessage("");
-
       setActionError("");
 
       const response = await addFavourite(cycle._id);
@@ -167,20 +112,14 @@ function CycleDetails() {
     }
   };
 
-  // ===================================================
-  // ADD TO CART
-  // ===================================================
+  // ================= ADD CART =================
 
   const handleAddToCart = async () => {
-    if (!requireLogin()) {
-      return;
-    }
+    if (!requireLogin()) return;
 
     try {
       setActionLoading(true);
-
       setMessage("");
-
       setActionError("");
 
       const response = await addToCart(
@@ -202,24 +141,19 @@ function CycleDetails() {
     }
   };
 
-  // ===================================================
-  // BUY NOW
-  // ===================================================
+  // ================= BUY NOW =================
 
   const handleBuyNow = () => {
-    if (!requireLogin()) {
-      return;
-    }
+    if (!requireLogin()) return;
 
+    // Checkout flow पुढच्या step मध्ये connect करू
     console.log("Buy now:", {
       cycleId: cycle._id,
       quantity,
     });
   };
 
-  // ===================================================
-  // LOADING
-  // ===================================================
+  // ================= LOADING =================
 
   if (loading) {
     return (
@@ -237,9 +171,7 @@ function CycleDetails() {
     );
   }
 
-  // ===================================================
-  // ERROR
-  // ===================================================
+  // ================= ERROR =================
 
   if (error) {
     return (
@@ -272,9 +204,7 @@ function CycleDetails() {
     );
   }
 
-  // ===================================================
-  // CYCLE NOT FOUND
-  // ===================================================
+  // ================= CYCLE NOT FOUND =================
 
   if (!cycle) {
     return (
@@ -303,24 +233,14 @@ function CycleDetails() {
     );
   }
 
-  // ===================================================
-  // STOCK
-  // ===================================================
-
   const isOutOfStock = cycle.stock <= 0;
-
-  // ===================================================
-  // MAIN UI
-  // ===================================================
 
   return (
     <main className="min-h-screen bg-[var(--color-bg)] px-4 py-8 sm:px-6 lg:px-8">
 
       <div className="mx-auto max-w-6xl">
 
-        {/* =================================================
-            BACK BUTTON
-        ================================================= */}
+        {/* ================= BACK ================= */}
 
         <Link
           to="/cycles"
@@ -329,25 +249,28 @@ function CycleDetails() {
           ← Back to Cycles
         </Link>
 
-        {/* =================================================
-            MAIN CARD
-        ================================================= */}
+
+        {/* ================= MAIN CARD ================= */}
 
         <div className="overflow-hidden rounded-[2rem] bg-white shadow-xl">
 
           <div className="grid grid-cols-1 lg:grid-cols-2">
 
-            {/* =================================================
-                IMAGE SECTION
-            ================================================= */}
+            {/* ================= IMAGE ================= */}
 
             <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden bg-[var(--color-bg)] p-6 sm:p-10 lg:min-h-[600px]">
 
-              {/* Background decoration */}
+              {/* Image decoration */}
 
               <div className="absolute left-8 top-8 h-24 w-24 rounded-full bg-white/60 blur-2xl" />
 
               <div className="absolute bottom-8 right-8 h-32 w-32 rounded-full bg-[var(--color-primary)]/10 blur-3xl" />
+
+              <img
+                src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${cycle.image}`}
+                alt={cycle.name}
+                className="relative z-10 max-h-[500px] w-full object-contain p-4 transition duration-500 hover:scale-105"
+              />
 
               {/* Category */}
 
@@ -355,39 +278,10 @@ function CycleDetails() {
                 {cycle.category}
               </div>
 
-              {/* =================================================
-                  CYCLE IMAGE
-              ================================================= */}
-
-              {cycleImage ? (
-                <img
-                  src={cycleImage}
-                  alt={cycle.name}
-                  className="relative z-10 max-h-[500px] w-full object-contain p-4 transition duration-500 hover:scale-105"
-                />
-              ) : (
-                <div className="relative z-10 flex flex-col items-center justify-center text-center">
-
-                  <div className="mb-4 text-7xl">
-                    🚲
-                  </div>
-
-                  <p className="font-semibold text-gray-500">
-                    Image not available
-                  </p>
-
-                  <p className="mt-1 text-xs text-gray-400">
-                    {cycle.image}
-                  </p>
-
-                </div>
-              )}
-
             </div>
 
-            {/* =================================================
-                DETAILS SECTION
-            ================================================= */}
+
+            {/* ================= DETAILS ================= */}
 
             <div className="flex flex-col justify-center p-6 sm:p-10 lg:p-12">
 
@@ -397,21 +291,23 @@ function CycleDetails() {
                 {cycle.category}
               </span>
 
+
               {/* Name */}
 
               <h1 className="mt-5 text-3xl font-bold leading-tight text-[var(--color-dark-blue)] sm:text-4xl">
                 {cycle.name}
               </h1>
 
+
               {/* Brand */}
 
               <p className="mt-3 text-[var(--color-text)]">
                 Brand:{" "}
-
                 <span className="font-bold text-[var(--color-dark-blue)]">
                   {cycle.brand}
                 </span>
               </p>
+
 
               {/* Price */}
 
@@ -422,17 +318,16 @@ function CycleDetails() {
                 </p>
 
                 <p className="mt-1 text-4xl font-bold text-[var(--color-primary)]">
-                  ₹
-                  {cycle.price?.toLocaleString(
-                    "en-IN"
-                  )}
+                  ₹{cycle.price?.toLocaleString("en-IN")}
                 </p>
 
               </div>
 
+
               {/* Divider */}
 
               <div className="my-7 border-t border-gray-100" />
+
 
               {/* Description */}
 
@@ -448,27 +343,31 @@ function CycleDetails() {
 
               </div>
 
+
               {/* Stock */}
 
               <div className="mt-6">
 
                 {isOutOfStock ? (
+
                   <div className="flex w-fit items-center gap-2 rounded-full bg-red-50 px-4 py-2 text-sm font-bold text-red-500">
                     <span>●</span>
                     Out of Stock
                   </div>
+
                 ) : (
+
                   <div className="flex w-fit items-center gap-2 rounded-full bg-green-50 px-4 py-2 text-sm font-bold text-green-600">
                     <span>●</span>
                     {cycle.stock} items available
                   </div>
+
                 )}
 
               </div>
 
-              {/* =================================================
-                  QUANTITY
-              ================================================= */}
+
+              {/* ================= QUANTITY ================= */}
 
               {!isOutOfStock && (
                 <div className="mt-6">
@@ -493,9 +392,7 @@ function CycleDetails() {
 
                     <button
                       onClick={increaseQuantity}
-                      disabled={
-                        quantity >= cycle.stock
-                      }
+                      disabled={quantity >= cycle.stock}
                       className="flex h-11 w-11 items-center justify-center text-xl font-medium transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       +
@@ -506,9 +403,8 @@ function CycleDetails() {
                 </div>
               )}
 
-              {/* =================================================
-                  ACTION BUTTONS
-              ================================================= */}
+
+              {/* ================= ACTION BUTTONS ================= */}
 
               <div className="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2">
 
@@ -523,6 +419,7 @@ function CycleDetails() {
                     ? "Please wait..."
                     : "❤️ Favourite"}
                 </button>
+
 
                 {/* Cart */}
 
@@ -541,9 +438,8 @@ function CycleDetails() {
 
               </div>
 
-              {/* =================================================
-                  BUY NOW
-              ================================================= */}
+
+              {/* Buy Now */}
 
               <button
                 onClick={handleBuyNow}
@@ -553,35 +449,23 @@ function CycleDetails() {
                 ⚡ Buy Now
               </button>
 
-              {/* =================================================
-                  SUCCESS MESSAGE
-              ================================================= */}
+
+              {/* ================= SUCCESS MESSAGE ================= */}
 
               {message && (
                 <div className="mt-5 flex items-center gap-3 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
-
                   <span>✓</span>
-
-                  <span>
-                    {message}
-                  </span>
-
+                  <span>{message}</span>
                 </div>
               )}
 
-              {/* =================================================
-                  ERROR MESSAGE
-              ================================================= */}
+
+              {/* ================= ERROR MESSAGE ================= */}
 
               {actionError && (
                 <div className="mt-5 flex items-center gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
-
                   <span>⚠️</span>
-
-                  <span>
-                    {actionError}
-                  </span>
-
+                  <span>{actionError}</span>
                 </div>
               )}
 
@@ -591,64 +475,41 @@ function CycleDetails() {
 
         </div>
 
-        {/* =================================================
-            TRUST SECTION
-        ================================================= */}
+
+        {/* ================= TRUST SECTION ================= */}
 
         <div className="mt-7 grid gap-4 sm:grid-cols-3">
 
-          {/* Easy Shopping */}
-
           <div className="rounded-2xl bg-white p-5 text-center shadow-md">
-
-            <div className="text-2xl">
-              🚚
-            </div>
-
+            <div className="text-2xl">🚚</div>
             <p className="mt-2 font-bold text-[var(--color-dark-blue)]">
               Easy Shopping
             </p>
-
             <p className="mt-1 text-xs text-gray-500">
               Simple and convenient
             </p>
-
           </div>
 
-          {/* Secure */}
 
           <div className="rounded-2xl bg-white p-5 text-center shadow-md">
-
-            <div className="text-2xl">
-              🔒
-            </div>
-
+            <div className="text-2xl">🔒</div>
             <p className="mt-2 font-bold text-[var(--color-dark-blue)]">
               Secure Experience
             </p>
-
             <p className="mt-1 text-xs text-gray-500">
               Shop with confidence
             </p>
-
           </div>
 
-          {/* CycleHub */}
 
           <div className="rounded-2xl bg-white p-5 text-center shadow-md">
-
-            <div className="text-2xl">
-              🚴
-            </div>
-
+            <div className="text-2xl">🚴</div>
             <p className="mt-2 font-bold text-[var(--color-dark-blue)]">
               Ride With CycleHub
             </p>
-
             <p className="mt-1 text-xs text-gray-500">
               Find your perfect cycle
             </p>
-
           </div>
 
         </div>
