@@ -7,3 +7,4 @@ function Loader() {
 }
 
 export default Loader;
+// update code for Loader.jsx
