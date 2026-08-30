@@ -37,6 +37,59 @@ function Orders() {
     }
   };
 
+  // ================= IMAGE URL =================
+
+  const getImageUrl = (image) => {
+    if (!image) {
+      return "";
+    }
+
+    // If image is already a complete URL
+    if (
+      image.startsWith("http://") ||
+      image.startsWith("https://")
+    ) {
+      return image;
+    }
+
+    // Backend URL from environment variable
+    const apiUrl = import.meta.env.VITE_API_URL || "";
+
+    // Remove /api from backend URL
+    const serverUrl = apiUrl.replace(/\/api\/?$/, "");
+
+    // Remove any leading slash from image name
+    const imageName = image.replace(/^\/+/, "");
+
+    // If image already contains uploads/
+    if (imageName.startsWith("uploads/")) {
+      return `${serverUrl}/${imageName}`;
+    }
+
+    return `${serverUrl}/uploads/${imageName}`;
+  };
+
+  // ================= IMAGE ERROR =================
+
+  const handleImageError = (event) => {
+    event.currentTarget.style.display = "none";
+
+    const parent = event.currentTarget.parentElement;
+
+    if (parent && !parent.querySelector(".image-fallback")) {
+      const fallback = document.createElement("div");
+
+      fallback.className =
+        "image-fallback flex h-full w-full items-center justify-center text-center text-3xl";
+
+      fallback.innerHTML = "🚲";
+
+      parent.appendChild(fallback);
+    }
+  };
+
+  // ================= LOADING =================
+
   if (loading) {
     return <Loader />;
   }
@@ -51,8 +104,11 @@ function Orders() {
         <div className="mb-10">
 
           <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-[var(--color-primary)] shadow-sm">
+
             <span>📦</span>
+
             <span>Order History</span>
+
           </div>
 
           <h1 className="text-4xl font-bold tracking-tight text-[var(--color-dark-blue)] sm:text-5xl">
@@ -76,6 +132,7 @@ function Orders() {
             </span>
 
             <div>
+
               <p className="font-semibold">
                 Something went wrong
               </p>
@@ -83,6 +140,7 @@ function Orders() {
               <p className="mt-1 text-sm">
                 {error}
               </p>
+
             </div>
 
           </div>
@@ -139,6 +197,7 @@ function Orders() {
                     <div className="min-w-0">
 
                       <div className="flex items-center gap-2">
+
                         <span className="text-xl">
                           🧾
                         </span>
@@ -146,6 +205,7 @@ function Orders() {
                         <p className="text-sm font-semibold uppercase tracking-wide text-[var(--color-primary)]">
                           Order ID
                         </p>
+
                       </div>
 
                       <p className="mt-2 break-all text-sm font-semibold text-[var(--color-dark-blue)] sm:text-base">
@@ -185,10 +245,13 @@ function Orders() {
                     </h3>
 
                     <span className="rounded-full bg-[var(--color-bg)] px-3 py-1 text-xs font-semibold text-[var(--color-primary)]">
+
                       {order.items.length}{" "}
+
                       {order.items.length === 1
                         ? "Item"
                         : "Items"}
+
                     </span>
 
                   </div>
@@ -200,7 +263,12 @@ function Orders() {
 
                       const cycle = item.cycle;
 
+                      const imageUrl = getImageUrl(
+                        cycle?.image
+                      );
+
                       return (
+
                         <div
                           key={index}
                           className="flex flex-col gap-5 rounded-2xl border border-gray-100 bg-[var(--color-bg)] p-4 transition duration-300 hover:border-[var(--color-secondary)] hover:bg-white sm:flex-row sm:items-center sm:justify-between"
@@ -210,22 +278,34 @@ function Orders() {
 
                           <div className="flex min-w-0 items-center gap-4">
 
+                            {/* ================= CYCLE IMAGE ================= */}
+
                             <div className="flex h-24 w-24 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-white shadow-sm sm:h-28 sm:w-28">
 
-                              {cycle?.image ? (
+                              {imageUrl ? (
+
                                 <img
-                                  src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${cycle.image}`}
-                                  alt={cycle.name}
+                                  src={imageUrl}
+                                  alt={
+                                    cycle?.name ||
+                                    "Cycle"
+                                  }
                                   className="h-full w-full object-contain p-2 transition duration-300 group-hover:scale-105"
+                                  onError={handleImageError}
                                 />
+
                               ) : (
-                                <div className="text-center text-xs text-gray-400">
-                                  No Image
+
+                                <div className="flex h-full w-full items-center justify-center text-3xl">
+                                  🚲
                                 </div>
+
                               )}
 
                             </div>
 
+
+                            {/* ================= CYCLE INFO ================= */}
 
                             <div className="min-w-0">
 
@@ -271,7 +351,9 @@ function Orders() {
                           </div>
 
                         </div>
+
                       );
+
                     })}
 
                   </div>
