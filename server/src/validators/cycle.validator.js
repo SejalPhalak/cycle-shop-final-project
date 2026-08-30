@@ -16,9 +16,4 @@ const cycleSchema = Joi.object({
   brand: Joi.string().trim().required(),
 });
 
-const updateCycleSchema = cycleSchema.fork(
-  ["image"],
-  (schema) => schema.optional()
-);
-
-export { cycleSchema, updateCycleSchema };
+export { cycleSchema };
