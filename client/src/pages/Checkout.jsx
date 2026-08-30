@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -97,7 +96,10 @@ function Checkout() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-4">
         <div className="rounded-xl bg-white p-8 text-center shadow-md">
-          <p className="mb-4 text-red-500">{error}</p>
+
+          <p className="mb-4 text-red-500">
+            {error}
+          </p>
 
           <button
             onClick={() => navigate("/cart")}
@@ -105,6 +107,7 @@ function Checkout() {
           >
             Back to Cart
           </button>
+
         </div>
       </div>
     );
@@ -117,6 +120,7 @@ function Checkout() {
   if (items.length === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--color-bg)] px-4">
+
         <h1 className="mb-3 text-3xl font-bold text-[var(--color-dark-blue)]">
           Your Cart is Empty
         </h1>
@@ -131,6 +135,7 @@ function Checkout() {
         >
           Continue Shopping
         </button>
+
       </div>
     );
   }
@@ -142,6 +147,7 @@ function Checkout() {
   if (showSuccess) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-4">
+
         <div className="w-full max-w-md rounded-2xl bg-white p-8 text-center shadow-xl">
 
           <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-full bg-green-100 text-4xl">
@@ -157,6 +163,7 @@ function Checkout() {
           </p>
 
           <div className="mb-6 rounded-lg bg-[var(--color-bg)] p-4">
+
             <p className="text-sm text-gray-500">
               Order ID
             </p>
@@ -164,6 +171,7 @@ function Checkout() {
             <p className="mt-1 break-all font-semibold text-[var(--color-dark-blue)]">
               {orderId}
             </p>
+
           </div>
 
           <button
@@ -174,6 +182,7 @@ function Checkout() {
           </button>
 
         </div>
+
       </div>
     );
   }
@@ -187,9 +196,12 @@ function Checkout() {
 
       <div className="mx-auto max-w-6xl">
 
-        {/* Heading */}
+        {/* =========================
+            HEADING
+        ========================= */}
 
         <div className="mb-8">
+
           <h1 className="text-3xl font-bold text-[var(--color-dark-blue)] md:text-4xl">
             Checkout
           </h1>
@@ -197,9 +209,13 @@ function Checkout() {
           <p className="mt-2 text-gray-600">
             Review your order and place it.
           </p>
+
         </div>
 
-        {/* Error */}
+
+        {/* =========================
+            ERROR
+        ========================= */}
 
         {error && (
           <div className="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-600">
@@ -207,7 +223,13 @@ function Checkout() {
           </div>
         )}
 
+
+        {/* =========================
+            MAIN GRID
+        ========================= */}
+
         <div className="grid gap-8 lg:grid-cols-3">
+
 
           {/* =========================
               ORDER ITEMS
@@ -221,6 +243,7 @@ function Checkout() {
                 Order Items
               </h2>
 
+
               <div className="space-y-5">
 
                 {items.map((item) => {
@@ -231,40 +254,66 @@ function Checkout() {
                     (cycle?.price || 0) * item.quantity;
 
                   return (
+
                     <div
                       key={item._id || cycle?._id}
-                      className="flex flex-col gap-4 border-b pb-5 sm:flex-row sm:items-center sm:justify-between"
+                      className="grid grid-cols-1 gap-5 border-b pb-5 md:grid-cols-[minmax(0,1fr)_140px] md:items-center"
                     >
 
-                      {/* Cycle Info */}
 
-                      <div className="flex items-center gap-4">
+                      {/* =========================
+                          CYCLE INFO
+                      ========================= */}
 
-                        <img
-  src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${cycle.image}`}
-  alt={cycle.name}
-  className="max-h-[450px] w-full rounded-2xl object-contain"
-/>
+                      <div className="flex min-w-0 items-center gap-4">
 
-                        <div>
-                          <h3 className="font-semibold text-[var(--color-text)]">
+
+                        {/* =========================
+                            IMAGE
+                        ========================= */}
+
+                        <div className="flex h-32 w-40 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-gray-50 sm:h-36 sm:w-48 md:h-40 md:w-52">
+
+                          <img
+                            src={`${import.meta.env.VITE_API_URL.replace(
+                              "/api",
+                              ""
+                            )}/uploads/${cycle.image}`}
+                            alt={cycle.name}
+                            className="h-full w-full object-contain"
+                          />
+
+                        </div>
+
+
+                        {/* =========================
+                            DETAILS
+                        ========================= */}
+
+                        <div className="min-w-0 flex-1">
+
+                          <h3 className="break-words text-base font-semibold text-[var(--color-text)] sm:text-lg">
                             {cycle?.name}
                           </h3>
 
-                          <p className="mt-1 text-sm text-gray-500">
+                          <p className="mt-2 text-sm text-gray-500">
                             Brand: {cycle?.brand}
                           </p>
 
-                          <p className="mt-1 text-sm text-gray-500">
+                          <p className="mt-2 text-sm text-gray-500">
                             Quantity: {item.quantity}
                           </p>
+
                         </div>
 
                       </div>
 
-                      {/* Price */}
 
-                      <div className="text-left sm:text-right">
+                      {/* =========================
+                          PRICE
+                      ========================= */}
+
+                      <div className="w-full border-t pt-3 text-left md:border-t-0 md:pt-0 md:text-right">
 
                         <p className="text-sm text-gray-500">
                           ₹{cycle?.price} × {item.quantity}
@@ -277,7 +326,9 @@ function Checkout() {
                       </div>
 
                     </div>
+
                   );
+
                 })}
 
               </div>
@@ -285,6 +336,7 @@ function Checkout() {
             </div>
 
           </div>
+
 
           {/* =========================
               ORDER SUMMARY
@@ -298,17 +350,27 @@ function Checkout() {
                 Order Summary
               </h2>
 
-              {/* Items */}
+
+              {/* =========================
+                  ITEMS
+              ========================= */}
 
               <div className="mb-4 flex justify-between text-gray-600">
-                <span>Items</span>
+
+                <span>
+                  Items
+                </span>
 
                 <span>
                   {items.length}
                 </span>
+
               </div>
 
-              {/* Total */}
+
+              {/* =========================
+                  TOTAL
+              ========================= */}
 
               <div className="border-t pt-4">
 
@@ -326,7 +388,10 @@ function Checkout() {
 
               </div>
 
-              {/* Payment */}
+
+              {/* =========================
+                  PAYMENT
+              ========================= */}
 
               <div className="mt-5 rounded-lg bg-[var(--color-bg)] p-4">
 
@@ -340,7 +405,10 @@ function Checkout() {
 
               </div>
 
-              {/* Place Order */}
+
+              {/* =========================
+                  PLACE ORDER
+              ========================= */}
 
               <button
                 onClick={handlePlaceOrder}
@@ -352,7 +420,10 @@ function Checkout() {
                   : "Place Order"}
               </button>
 
-              {/* Back */}
+
+              {/* =========================
+                  BACK TO CART
+              ========================= */}
 
               <button
                 onClick={() => navigate("/cart")}
