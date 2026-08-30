@@ -1,23 +1,15 @@
 import express from "express";
-
 import cors from "cors";
-
 import path from "path";
-
 import { fileURLToPath } from "url";
 
 import authRoutes from "./routes/auth.routes.js";
-
 import cycleRoutes from "./routes/cycle.routes.js";
-
 import favouriteRoutes from "./routes/favourite.routes.js";
-
 import cartRoutes from "./routes/cart.routes.js";
-
 import orderRoutes from "./routes/order.routes.js";
 
 import notFound from "./middleware/notFound.middleware.js";
-
 import errorMiddleware from "./middleware/error.middleware.js";
 
 const app = express();
@@ -25,7 +17,6 @@ const app = express();
 // ================= PATH SETUP =================
 
 const __filename = fileURLToPath(import.meta.url);
-
 const __dirname = path.dirname(__filename);
 
 // ================= MIDDLEWARE =================
@@ -36,28 +27,21 @@ app.use(express.json());
 
 // ================= STATIC UPLOADS =================
 
-// Serve images from server/src/uploads
+// Images are stored in:
+// server/uploads/
 
 app.use(
-
-  "/uploads",
-
-  express.static(path.join(__dirname, "uploads"))
-
+  "/uploads",
+  express.static(path.join(__dirname, "../uploads"))
 );
 
 // ================= HOME =================
 
 app.get("/", (req, res) => {
-
-  res.json({
-
-    success: true,
-
-    message: "Cycle Shop API is running",
-
-  });
-
+  res.json({
+    success: true,
+    message: "Cycle Shop API is running",
+  });
 });
 
 // ================= ROUTES =================
