@@ -1,6 +1,5 @@
 import Cycle from "../models/Cycle.js";
 import { cycleSchema } from "../validators/cycle.validator.js";
-
 // GET /api/cycles
 // GET /api/cycles?category=Mountain
 const getCycles = async (req, res) => {
@@ -10,27 +9,14 @@ const getCycles = async (req, res) => {
     const filter = {};
 
     if (category) {
-      filter.category = category.trim();
+      filter.category = category;
     }
 
-    const cycles = await Cycle.find(filter)
-      .sort({ createdAt: -1 })
-      .limit(100);
-
-    const totalCycles = cycles.length;
-
-    if (totalCycles === 0) {
-      return res.status(200).json({
-        success: true,
-        count: 0,
-        message: "No cycles found",
-        cycles: [],
-      });
-    }
+    const cycles = await Cycle.find(filter);
 
     return res.status(200).json({
       success: true,
-      count: totalCycles,
+      count: cycles.length,
       cycles,
     });
   } catch (error) {
@@ -41,20 +27,12 @@ const getCycles = async (req, res) => {
   }
 };
 
-
 // GET /api/cycles/:id
 const getCycleById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Cycle ID is required",
-      });
-    }
-
-    const cycle = await Cycle.findById(id).lean();
+    const cycle = await Cycle.findById(id);
 
     if (!cycle) {
       return res.status(404).json({
@@ -76,28 +54,12 @@ const getCycleById = async (req, res) => {
 };
 
 
-// POST /api/cycles
+// create cycle 
 const createCycle = async (req, res) => {
   try {
     const cycleData = {
       ...req.body,
     };
-
-    if (cycleData.name) {
-      cycleData.name = cycleData.name.trim();
-    }
-
-    if (cycleData.brand) {
-      cycleData.brand = cycleData.brand.trim();
-    }
-
-    if (cycleData.category) {
-      cycleData.category = cycleData.category.trim();
-    }
-
-    if (cycleData.description) {
-      cycleData.description = cycleData.description.trim();
-    }
 
     if (req.file) {
       cycleData.image = req.file.filename;
@@ -116,7 +78,7 @@ const createCycle = async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: "New cycle created successfully",
+      message: "Cycle created successfully",
       cycle,
     });
   } catch (error) {
@@ -128,38 +90,12 @@ const createCycle = async (req, res) => {
 };
 
 
-// PUT /api/cycles/:id
+// update cycle
 const updateCycle = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // Check cycle exists
-    
-    const existingCycle = await Cycle.findById(id);
-
-    if (!existingCycle) {
-      return res.status(404).json({
-        success: false,
-        message: "Cycle not found",
-      });
-    }
-
-    // Prepare update data
-
-    const cycleData = {
-      ...req.body,
-    };
-
-    // New image selected
-
-    if (req.file) {
-      cycleData.image = req.file.filename;
-    }
-
-    // Validate update data
-
-    const { error, value } =
-      updateCycleSchema.validate(cycleData);
+    const { error, value } = cycleSchema.validate(req.body);
 
     if (error) {
       return res.status(400).json({
@@ -168,8 +104,6 @@ const updateCycle = async (req, res) => {
       });
     }
 
-    // Update cycle
-   
     const cycle = await Cycle.findByIdAndUpdate(
       id,
       value,
@@ -179,14 +113,19 @@ const updateCycle = async (req, res) => {
       }
     );
 
+    if (!cycle) {
+      return res.status(404).json({
+        success: false,
+        message: "Cycle not found",
+      });
+    }
+
     return res.status(200).json({
       success: true,
       message: "Cycle updated successfully",
       cycle,
     });
   } catch (error) {
-    console.error("Update cycle error:", error);
-
     return res.status(500).json({
       success: false,
       message: error.message,
@@ -194,18 +133,10 @@ const updateCycle = async (req, res) => {
   }
 };
 
-
-// DELETE /api/cycles/:id
+// delete cycle 
 const deleteCycle = async (req, res) => {
   try {
     const { id } = req.params;
-
-    if (!id) {
-      return res.status(400).json({
-        success: false,
-        message: "Cycle ID is required",
-      });
-    }
 
     const cycle = await Cycle.findByIdAndDelete(id);
 
@@ -228,11 +159,10 @@ const deleteCycle = async (req, res) => {
   }
 };
 
-
 export {
   getCycles,
   getCycleById,
   createCycle,
   updateCycle,
-  deleteCycle,
+  deleteCycle
 };
