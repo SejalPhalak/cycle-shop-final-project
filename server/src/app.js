@@ -27,11 +27,12 @@ app.use(express.json());
 
 // ================= STATIC UPLOADS =================
 
-// Serve images from server/src/uploads
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"))
-);
+// Images are stored in: server/uploads
+// app.js is inside: server/src
+
+const uploadsPath = path.join(__dirname, "..", "uploads");
+
+app.use("/uploads", express.static(uploadsPath));
 
 // ================= HOME =================
 
