@@ -133,38 +133,33 @@ const updateCycle = async (req, res) => {
   try {
     const { id } = req.params;
 
-    if (!id) {
-      return res.status(400).json({
+    // Check cycle exists
+    
+    const existingCycle = await Cycle.findById(id);
+
+    if (!existingCycle) {
+      return res.status(404).json({
         success: false,
-        message: "Cycle ID is required",
+        message: "Cycle not found",
       });
     }
+
+    // Prepare update data
 
     const cycleData = {
       ...req.body,
     };
 
-    if (cycleData.name) {
-      cycleData.name = cycleData.name.trim();
-    }
-
-    if (cycleData.brand) {
-      cycleData.brand = cycleData.brand.trim();
-    }
-
-    if (cycleData.category) {
-      cycleData.category = cycleData.category.trim();
-    }
-
-    if (cycleData.description) {
-      cycleData.description = cycleData.description.trim();
-    }
+    // New image selected
 
     if (req.file) {
       cycleData.image = req.file.filename;
     }
 
-    const { error, value } = cycleSchema.validate(cycleData);
+    // Validate update data
+
+    const { error, value } =
+      updateCycleSchema.validate(cycleData);
 
     if (error) {
       return res.status(400).json({
@@ -173,6 +168,8 @@ const updateCycle = async (req, res) => {
       });
     }
 
+    // Update cycle
+   
     const cycle = await Cycle.findByIdAndUpdate(
       id,
       value,
@@ -182,19 +179,14 @@ const updateCycle = async (req, res) => {
       }
     );
 
-    if (!cycle) {
-      return res.status(404).json({
-        success: false,
-        message: "Cycle not found",
-      });
-    }
-
     return res.status(200).json({
       success: true,
       message: "Cycle updated successfully",
       cycle,
     });
   } catch (error) {
+    console.error("Update cycle error:", error);
+
     return res.status(500).json({
       success: false,
       message: error.message,
