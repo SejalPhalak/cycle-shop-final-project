@@ -1,15 +1,23 @@
 import { Link } from "react-router-dom";
 
 function CycleCard({ cycle }) {
-  // Create the complete image URL from the backend API URL
+  // ================= IMAGE URL =================
+
+  const apiUrl =
+    import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+  const serverUrl = apiUrl.replace(/\/api\/?$/, "");
+
   const imageUrl = cycle?.image
-    ? `${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${cycle.image}`
+    ? `${serverUrl}/uploads/${String(cycle.image).replace(/^\/+/, "")}`
     : "";
 
-  // Check whether the cycle is currently available
+  // ================= STOCK =================
+
   const isAvailable = Number(cycle?.stock || 0) > 0;
 
-  // Format the cycle price in Indian currency format
+  // ================= PRICE =================
+
   const formattedPrice =
     typeof cycle?.price === "number"
       ? cycle.price.toLocaleString("en-IN")
@@ -18,39 +26,67 @@ function CycleCard({ cycle }) {
   return (
     <div className="group overflow-hidden rounded-2xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl">
 
-      {/* Cycle image section */}
+      {/* ================= IMAGE ================= */}
+
       <Link to={`/cycles/${cycle._id}`}>
-        <div className="h-56 overflow-hidden bg-[var(--color-bg)]">
+        <div className="relative flex h-56 items-center justify-center overflow-hidden bg-[var(--color-bg)]">
 
           {imageUrl ? (
             <img
               src={imageUrl}
               alt={cycle?.name || "Cycle"}
-              className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              className="h-full w-full object-contain p-3 transition duration-300 group-hover:scale-105"
               onError={(event) => {
+                console.error(
+                  "Cycle image failed:",
+                  imageUrl
+                );
+
                 event.currentTarget.style.display = "none";
+
+                const fallback =
+                  event.currentTarget.nextElementSibling;
+
+                if (fallback) {
+                  fallback.classList.remove("hidden");
+                }
               }}
             />
-          ) : (
-            <div className="flex h-full items-center justify-center text-5xl">
-              🚲
-            </div>
-          )}
+          ) : null}
+
+          {/* Fallback */}
+
+          <div
+            className={`${
+              imageUrl ? "hidden" : "flex"
+            } absolute inset-0 items-center justify-center text-5xl`}
+          >
+            🚲
+          </div>
+
+          {/* Category */}
+
+          <div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-xs font-bold text-[var(--color-primary)] shadow-sm">
+            {cycle?.category || "Cycle"}
+          </div>
 
         </div>
       </Link>
 
 
-      {/* Cycle information */}
+      {/* ================= INFORMATION ================= */}
+
       <div className="p-5">
 
         {/* Category */}
+
         <p className="mb-2 text-sm font-semibold text-[var(--color-primary)]">
           {cycle?.category || "Cycle"}
         </p>
 
 
-        {/* Cycle name */}
+        {/* Name */}
+
         <Link to={`/cycles/${cycle._id}`}>
           <h2 className="line-clamp-1 text-xl font-bold text-[var(--color-dark-blue)] transition hover:text-[var(--color-primary)]">
             {cycle?.name || "Cycle"}
@@ -59,21 +95,20 @@ function CycleCard({ cycle }) {
 
 
         {/* Brand */}
+
         <p className="mt-1 text-sm text-[var(--color-text)]">
           Brand: {cycle?.brand || "N/A"}
         </p>
 
 
-        {/* Price and details button */}
+        {/* Price + Details */}
+
         <div className="mt-5 flex items-center justify-between gap-3">
 
-          {/* Price */}
           <p className="text-xl font-bold text-[var(--color-primary)]">
             ₹{formattedPrice}
           </p>
 
-
-          {/* Details button */}
           <Link
             to={`/cycles/${cycle._id}`}
             className="rounded-full bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-[var(--color-dark-blue)]"
@@ -84,7 +119,8 @@ function CycleCard({ cycle }) {
         </div>
 
 
-        {/* Stock status */}
+        {/* Stock */}
+
         <p
           className={`mt-3 text-sm font-medium ${
             isAvailable
@@ -98,6 +134,7 @@ function CycleCard({ cycle }) {
         </p>
 
       </div>
+
     </div>
   );
 }
