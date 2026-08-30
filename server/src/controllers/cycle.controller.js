@@ -13,11 +13,13 @@ const getCycles = async (req, res) => {
     }
 
 const cycles = await Cycle.find(filter).sort({ createdAt: -1 });
-    return res.status(200).json({
-      success: true,
-      count: cycles.length,
-      cycles,
-    });
+   const totalCycles = cycles.length;
+
+return res.status(200).json({
+  success: true,
+  count: totalCycles,
+  cycles,
+});
   } catch (error) {
     return res.status(500).json({
       success: false,
