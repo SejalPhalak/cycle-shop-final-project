@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 import CycleCard from "../components/CycleCard";
@@ -53,145 +52,87 @@ function Cycles() {
   return (
     <main className="min-h-screen bg-[var(--color-bg)]">
 
-      {/* ================= HERO HEADER ================= */}
-
-      <section className="relative overflow-hidden px-4 pb-12 pt-14 sm:px-6 lg:px-8">
-
-        {/* Background decoration */}
-
-        <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[var(--color-primary)]/10 blur-3xl" />
-
-        <div className="absolute -left-20 bottom-0 h-56 w-56 rounded-full bg-[var(--color-secondary)]/20 blur-3xl" />
-
-        <div className="relative mx-auto max-w-7xl">
+      {/* ================= HEADER ================= */}
+      <section className="px-4 pb-8 pt-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl">
 
           <div className="text-center">
 
-            <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-bold text-[var(--color-primary)] shadow-sm">
-              <span>🚴</span>
+            <p className="font-semibold uppercase tracking-wider text-[var(--color-primary)]">
               Explore Our Collection
-            </div>
+            </p>
 
-            <h1 className="text-4xl font-bold leading-tight text-[var(--color-dark-blue)] sm:text-5xl lg:text-6xl">
-              Find Your{" "}
-              <span className="text-[var(--color-primary)]">
-                Perfect Ride
-              </span>
+            <h1 className="mt-2 text-3xl font-bold text-[var(--color-dark-blue)] sm:text-4xl lg:text-5xl">
+              Find Your Perfect Ride
             </h1>
 
-            <p className="mx-auto mt-5 max-w-2xl text-base leading-7 text-[var(--color-text)] sm:text-lg">
-              Discover quality cycles designed for every
-              adventure, every road and every rider.
+            <p className="mx-auto mt-4 max-w-2xl text-[var(--color-text)]">
+              Discover quality cycles designed for every kind of ride.
             </p>
 
           </div>
 
         </div>
-
       </section>
 
 
       {/* ================= SEARCH & FILTER ================= */}
+      <section className="px-4 pb-8 sm:px-6 lg:px-8">
 
-      <section className="px-4 pb-10 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl rounded-2xl bg-white p-4 shadow-sm sm:p-5">
 
-        <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-          <div className="rounded-3xl bg-white p-4 shadow-lg sm:p-5">
+            {/* Search + Category */}
+            <div className="flex w-full flex-col gap-3 sm:flex-row">
 
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              {/* Search */}
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search cycles..."
+                className="w-full rounded-xl border border-[var(--color-secondary)] px-4 py-3 text-[var(--color-text)] outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-secondary)] sm:max-w-sm"
+              />
 
-              {/* Search + Category */}
+              {/* Category */}
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className="w-full rounded-xl border border-[var(--color-secondary)] bg-white px-4 py-3 text-[var(--color-text)] outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-secondary)] sm:w-auto"
+              >
+                <option value="">All Categories</option>
 
-              <div className="flex w-full flex-col gap-3 sm:flex-row">
+                <option value="Mountain">
+                  Mountain
+                </option>
 
-                {/* Search */}
+                <option value="Road">
+                  Road
+                </option>
 
-                <div className="relative w-full sm:max-w-md">
+                <option value="Hybrid">
+                  Hybrid
+                </option>
 
-                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-lg">
-                    🔍
-                  </span>
-
-                  <input
-                    type="text"
-                    value={search}
-                    onChange={(e) =>
-                      setSearch(e.target.value)
-                    }
-                    placeholder="Search by cycle name or brand..."
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3.5 pl-11 pr-4 text-sm text-[var(--color-text)] outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                  />
-
-                </div>
-
-
-                {/* Category */}
-
-                <div className="relative">
-
-                  <select
-                    value={category}
-                    onChange={(e) =>
-                      setCategory(e.target.value)
-                    }
-                    className="w-full appearance-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 pr-10 text-sm font-medium text-[var(--color-text)] outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20 sm:w-52"
-                  >
-
-                    <option value="">
-                      All Categories
-                    </option>
-
-                    <option value="Mountain">
-                      Mountain
-                    </option>
-
-                    <option value="Road">
-                      Road
-                    </option>
-
-                    <option value="Hybrid">
-                      Hybrid
-                    </option>
-
-                    <option value="Electric">
-                      Electric
-                    </option>
-
-                  </select>
-
-                  <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-                    ▾
-                  </span>
-
-                </div>
-
-              </div>
-
-
-              {/* Result Count */}
-
-              {!loading && !error && (
-                <div className="flex items-center justify-between gap-3 rounded-xl bg-[var(--color-bg)] px-4 py-3 lg:min-w-fit">
-
-                  <span className="text-lg">
-                    🚲
-                  </span>
-
-                  <p className="text-sm font-semibold text-[var(--color-text)]">
-                    <span className="font-bold text-[var(--color-dark-blue)]">
-                      {filteredCycles.length}
-                    </span>{" "}
-                    {filteredCycles.length === 1
-                      ? "Cycle"
-                      : "Cycles"}{" "}
-                    Found
-                  </p>
-
-                </div>
-              )}
+                <option value="Electric">
+                  Electric
+                </option>
+              </select>
 
             </div>
+
+
+            {/* Result Count */}
+            {!loading && !error && (
+              <p className="whitespace-nowrap text-sm font-medium text-[var(--color-text)]">
+                {filteredCycles.length}{" "}
+                {filteredCycles.length === 1
+                  ? "Cycle"
+                  : "Cycles"}{" "}
+                Found
+              </p>
+            )}
 
           </div>
 
@@ -201,107 +142,85 @@ function Cycles() {
 
 
       {/* ================= CYCLES ================= */}
-
       <section className="px-4 pb-16 sm:px-6 lg:px-8">
 
         <div className="mx-auto max-w-7xl">
 
           {/* Loading */}
-
-          {loading && (
-            <div className="flex min-h-[300px] items-center justify-center rounded-3xl bg-white shadow-sm">
-
-              <div className="text-center">
-
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-bg)] text-3xl">
-                  🚴
-                </div>
-
-                <Loader />
-
-                <p className="mt-3 text-sm text-gray-500">
-                  Finding the best cycles for you...
-                </p>
-
-              </div>
-
-            </div>
-          )}
+          {loading && <Loader />}
 
 
           {/* Error */}
-
           {!loading && error && (
-            <div className="rounded-3xl bg-white px-6 py-14 text-center shadow-lg">
+            <div className="rounded-2xl bg-white p-8 text-center shadow-sm">
 
-              <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-red-50 text-4xl">
-                ⚠️
+              <div className="mx-auto max-w-md">
+
+                <h2 className="text-xl font-bold text-red-500">
+                  Something went wrong
+                </h2>
+
+                <p className="mt-2 text-[var(--color-text)]">
+                  {error}
+                </p>
+
+                <button
+                  onClick={fetchCycles}
+                  className="mt-5 rounded-full bg-[var(--color-primary)] px-6 py-3 font-semibold text-white transition hover:bg-[var(--color-dark-blue)]"
+                >
+                  Try Again
+                </button>
+
               </div>
-
-              <h2 className="mt-5 text-2xl font-bold text-red-500">
-                Something went wrong
-              </h2>
-
-              <p className="mx-auto mt-2 max-w-md leading-6 text-[var(--color-text)]">
-                {error}
-              </p>
-
-              <button
-                onClick={fetchCycles}
-                className="mt-6 rounded-xl bg-[var(--color-primary)] px-7 py-3 font-semibold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-[var(--color-dark-blue)] hover:shadow-lg"
-              >
-                Try Again
-              </button>
 
             </div>
           )}
 
 
           {/* No Search Result */}
-
           {!loading &&
             !error &&
             filteredCycles.length === 0 && (
+              <div className="rounded-2xl bg-white p-10 text-center shadow-sm">
 
-              <div className="rounded-3xl bg-white px-6 py-16 text-center shadow-lg">
+                <div className="mx-auto max-w-md">
 
-                <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-3xl bg-[var(--color-bg)] text-5xl">
-                  🚲
+                  <div className="text-5xl">
+                    🚲
+                  </div>
+
+                  <h2 className="mt-4 text-2xl font-bold text-[var(--color-dark-blue)]">
+                    No Cycles Found
+                  </h2>
+
+                  <p className="mt-2 text-[var(--color-text)]">
+                    Try another cycle name, brand, or category.
+                  </p>
+
+                  {/* Clear Search */}
+                  {(search || category) && (
+                    <button
+                      onClick={() => {
+                        setSearch("");
+                        setCategory("");
+                      }}
+                      className="mt-5 rounded-full bg-[var(--color-primary)] px-6 py-3 font-semibold text-white transition hover:bg-[var(--color-dark-blue)]"
+                    >
+                      Clear Filters
+                    </button>
+                  )}
+
                 </div>
-
-                <h2 className="mt-6 text-2xl font-bold text-[var(--color-dark-blue)]">
-                  No Cycles Found
-                </h2>
-
-                <p className="mx-auto mt-2 max-w-md leading-6 text-[var(--color-text)]">
-                  Try another cycle name, brand, or category.
-                </p>
-
-                {/* Clear Search */}
-
-                {(search || category) && (
-                  <button
-                    onClick={() => {
-                      setSearch("");
-                      setCategory("");
-                    }}
-                    className="mt-6 rounded-xl bg-[var(--color-primary)] px-6 py-3 font-semibold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-[var(--color-dark-blue)]"
-                  >
-                    Clear Filters
-                  </button>
-                )}
 
               </div>
             )}
 
 
           {/* Cycle Cards */}
-
           {!loading &&
             !error &&
             filteredCycles.length > 0 && (
-
-              <div className="grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 
                 {filteredCycles.map((cycle) => (
                   <CycleCard
@@ -311,46 +230,14 @@ function Cycles() {
                 ))}
 
               </div>
-
             )}
 
         </div>
 
       </section>
 
-
-      {/* ================= BOTTOM ================= */}
-
-      {!loading &&
-        !error &&
-        filteredCycles.length > 0 && (
-
-          <section className="px-4 pb-14 sm:px-6 lg:px-8">
-
-            <div className="mx-auto max-w-7xl rounded-3xl bg-[var(--color-dark-blue)] px-6 py-8 text-center shadow-xl">
-
-              <div className="text-3xl">
-                🚴
-              </div>
-
-              <h2 className="mt-3 text-2xl font-bold text-white">
-                Ready for Your Next Ride?
-              </h2>
-
-              <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-white/70">
-                Choose a cycle that matches your style,
-                adventure and everyday journey.
-              </p>
-
-            </div>
-
-          </section>
-
-        )}
-
     </main>
   );
 }
 
 export default Cycles;
-
