@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -11,6 +10,8 @@ function EditCycle() {
   const { id } = useParams();
   const navigate = useNavigate();
 
+  // ================= FORM DATA =================
+
   const [formData, setFormData] = useState({
     name: "",
     brand: "",
@@ -18,12 +19,18 @@ function EditCycle() {
     category: "",
     stock: "",
     description: "",
-    image: "",
+    image: null,
   });
+
+  // Old image URL
+  const [oldImage, setOldImage] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  // New image selected or not
+  const [changeImage, setChangeImage] = useState(false);
 
   // ================= GET CYCLE =================
 
@@ -49,8 +56,12 @@ function EditCycle() {
           category: cycle.category || "",
           stock: cycle.stock || "",
           description: cycle.description || "",
-          image: cycle.image || "",
+          image: null,
         });
+
+        // Store old image separately
+        setOldImage(cycle.image || "");
+
       } catch (err) {
         console.error(err);
 
@@ -69,11 +80,33 @@ function EditCycle() {
   // ================= HANDLE CHANGE =================
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value, files } = e.target;
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === "image" ? files[0] : value,
+    }));
+
+    // If image selected
+    if (name === "image" && files[0]) {
+      setChangeImage(true);
+    }
+  };
+
+  // ================= CHANGE IMAGE =================
+
+  const handleChangeImage = () => {
+    setChangeImage(true);
+  };
+
+  // ================= KEEP OLD IMAGE =================
+
+  const handleKeepCurrentImage = () => {
+    setChangeImage(false);
+
+    setFormData((prev) => ({
+      ...prev,
+      image: null,
     }));
   };
 
@@ -86,25 +119,40 @@ function EditCycle() {
     setSaving(true);
 
     try {
-      const response = await updateCycle(id, {
-        name: formData.name.trim(),
-        brand: formData.brand.trim(),
-        price: Number(formData.price),
-        category: formData.category,
-        stock: Number(formData.stock),
-        description: formData.description.trim(),
-        image: formData.image.trim(),
-      });
+      // ================= FORM DATA =================
+
+      const data = new FormData();
+
+      data.append("name", formData.name.trim());
+      data.append("brand", formData.brand.trim());
+      data.append("price", Number(formData.price));
+      data.append("category", formData.category);
+      data.append("stock", Number(formData.stock));
+      data.append(
+        "description",
+        formData.description.trim()
+      );
+
+      // New image only if selected
+      if (changeImage && formData.image) {
+        data.append("image", formData.image);
+      }
+
+      const response = await updateCycle(id, data);
+
+      console.log("Update cycle response:", response);
 
       if (response.success) {
         navigate("/admin/cycles");
       } else {
         setError(
-          response.message || "Failed to update cycle"
+          response.message ||
+            "Failed to update cycle"
         );
       }
+
     } catch (err) {
-      console.error(err);
+      console.error("Update cycle error:", err);
 
       setError(
         err.response?.data?.message ||
@@ -119,32 +167,20 @@ function EditCycle() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-4">
-
-        <div className="text-center">
-
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-3xl shadow-lg">
-            🚲
-          </div>
-
-          <p className="text-lg font-semibold text-[var(--color-dark-blue)]">
-            Loading cycle...
-          </p>
-
-          <p className="mt-1 text-sm text-gray-500">
-            Preparing cycle information
-          </p>
-
-        </div>
-
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-bg)]">
+        <p className="text-lg">
+          Loading cycle...
+        </p>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-[var(--color-bg)] px-4 py-10 sm:px-6 lg:px-8">
+  // ================= UI =================
 
-      <div className="mx-auto max-w-3xl">
+  return (
+    <div className="min-h-screen bg-[var(--color-bg)] px-4 py-10">
+
+      <div className="mx-auto max-w-2xl">
 
         {/* ================= HEADER ================= */}
 
@@ -152,317 +188,273 @@ function EditCycle() {
 
           <button
             type="button"
-            onClick={() =>
-              navigate("/admin/cycles")
-            }
-            className="mb-5 inline-flex items-center gap-2 rounded-lg px-2 py-2 font-semibold text-[var(--color-primary)] transition hover:bg-white hover:text-[var(--color-dark-blue)]"
+            onClick={() => navigate("/admin/cycles")}
+            className="mb-4 font-semibold text-[var(--color-primary)] hover:underline"
           >
             ← Back to Manage Cycles
           </button>
 
-          <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold text-[var(--color-dark-blue)]">
+            Edit Cycle
+          </h1>
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-2xl shadow-sm">
-              ✏️
-            </div>
-
-            <div>
-
-              <p className="text-xs font-bold uppercase tracking-widest text-[var(--color-primary)]">
-                Admin Panel
-              </p>
-
-              <h1 className="mt-1 text-3xl font-bold text-[var(--color-dark-blue)] sm:text-4xl">
-                Edit Cycle
-              </h1>
-
-            </div>
-
-          </div>
-
-          <p className="mt-3 text-[var(--color-text)]">
-            Update the information of your cycle.
+          <p className="mt-2 text-[var(--color-text)]">
+            Update cycle information
           </p>
 
         </div>
 
-
         {/* ================= ERROR ================= */}
 
         {error && (
-          <div className="mb-6 flex items-start gap-3 rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-sm font-medium text-red-600 shadow-sm">
-
-            <span className="text-lg">
-              ⚠️
-            </span>
-
-            <span>
-              {error}
-            </span>
-
+          <div className="mb-5 rounded-xl bg-red-100 px-4 py-3 text-sm font-medium text-red-600">
+            {error}
           </div>
         )}
 
-
-        {/* ================= FORM CARD ================= */}
+        {/* ================= FORM ================= */}
 
         <form
           onSubmit={handleSubmit}
-          className="overflow-hidden rounded-3xl bg-white shadow-xl"
+          className="rounded-2xl bg-white p-6 shadow-lg sm:p-8"
         >
 
-          {/* Form Header */}
+          <div className="space-y-5">
 
-          <div className="border-b border-gray-100 bg-gray-50/70 px-6 py-5 sm:px-8">
+            {/* ================= NAME ================= */}
 
-            <h2 className="font-bold text-[var(--color-dark-blue)]">
-              Cycle Information
-            </h2>
+            <div>
+              <label className="mb-2 block font-medium text-[var(--color-text)]">
+                Cycle Name
+              </label>
 
-            <p className="mt-1 text-sm text-gray-500">
-              Make the required changes and save your updates.
-            </p>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[var(--color-primary)]"
+              />
+            </div>
 
-          </div>
+            {/* ================= BRAND ================= */}
 
+            <div>
+              <label className="mb-2 block font-medium text-[var(--color-text)]">
+                Brand
+              </label>
 
-          <div className="p-6 sm:p-8">
+              <input
+                type="text"
+                name="brand"
+                value={formData.brand}
+                onChange={handleChange}
+                required
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[var(--color-primary)]"
+              />
+            </div>
 
-            <div className="space-y-6">
+            {/* ================= PRICE ================= */}
 
-              {/* ================= NAME ================= */}
+            <div>
+              <label className="mb-2 block font-medium text-[var(--color-text)]">
+                Price
+              </label>
 
-              <div>
+              <input
+                type="number"
+                name="price"
+                value={formData.price}
+                onChange={handleChange}
+                min="0"
+                required
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[var(--color-primary)]"
+              />
+            </div>
 
-                <label className="mb-2 block text-sm font-semibold text-[var(--color-dark-blue)]">
-                  Cycle Name
-                </label>
+            {/* ================= STOCK ================= */}
 
-                <input
-                  type="text"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  placeholder="Enter cycle name"
-                  required
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                />
+            <div>
+              <label className="mb-2 block font-medium text-[var(--color-text)]">
+                Stock
+              </label>
 
-              </div>
+              <input
+                type="number"
+                name="stock"
+                value={formData.stock}
+                onChange={handleChange}
+                min="0"
+                required
+                className="w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[var(--color-primary)]"
+              />
+            </div>
 
+            {/* ================= CATEGORY ================= */}
 
-              {/* ================= BRAND ================= */}
+            <div>
+              <label className="mb-2 block font-medium text-[var(--color-text)]">
+                Category
+              </label>
 
-              <div>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+                className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none focus:border-[var(--color-primary)]"
+              >
+                <option value="">
+                  Select Category
+                </option>
 
-                <label className="mb-2 block text-sm font-semibold text-[var(--color-dark-blue)]">
-                  Brand
-                </label>
+                <option value="Mountain">
+                  Mountain
+                </option>
 
-                <input
-                  type="text"
-                  name="brand"
-                  value={formData.brand}
-                  onChange={handleChange}
-                  placeholder="Enter brand"
-                  required
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                />
+                <option value="Road">
+                  Road
+                </option>
 
-              </div>
+                <option value="Hybrid">
+                  Hybrid
+                </option>
 
+                <option value="Electric">
+                  Electric
+                </option>
 
-              {/* ================= PRICE + STOCK ================= */}
+                <option value="Kids">
+                  Kids
+                </option>
+              </select>
+            </div>
 
-              <div className="grid gap-5 sm:grid-cols-2">
+            {/* ================= IMAGE ================= */}
 
-                {/* Price */}
+            <div>
 
-                <div>
+              <label className="mb-2 block font-medium text-[var(--color-text)]">
+                Cycle Image
+              </label>
 
-                  <label className="mb-2 block text-sm font-semibold text-[var(--color-dark-blue)]">
-                    Price
-                  </label>
+              {/* OLD IMAGE */}
 
-                  <div className="relative">
+              {!changeImage && oldImage && (
+                <div className="mb-4">
 
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-semibold text-gray-400">
-                      ₹
-                    </span>
+                  <p className="mb-2 text-sm text-gray-500">
+                    Current Image
+                  </p>
 
-                    <input
-                      type="number"
-                      name="price"
-                      value={formData.price}
-                      onChange={handleChange}
-                      placeholder="Enter price"
-                      min="0"
-                      required
-                      className="w-full rounded-xl border border-gray-200 bg-gray-50 py-3.5 pl-9 pr-4 text-sm outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                    />
-
-                  </div>
-
-                </div>
-
-
-                {/* Stock */}
-
-                <div>
-
-                  <label className="mb-2 block text-sm font-semibold text-[var(--color-dark-blue)]">
-                    Stock
-                  </label>
-
-                  <input
-                    type="number"
-                    name="stock"
-                    value={formData.stock}
-                    onChange={handleChange}
-                    placeholder="Available stock"
-                    min="0"
-                    required
-                    className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                  <img
+                    src={oldImage}
+                    alt={formData.name}
+                    className="h-48 w-full rounded-xl border object-cover"
                   />
 
                 </div>
+              )}
 
-              </div>
+              {/* CHANGE IMAGE BUTTON */}
 
+              {!changeImage ? (
 
-              {/* ================= CATEGORY ================= */}
-
-              <div>
-
-                <label className="mb-2 block text-sm font-semibold text-[var(--color-dark-blue)]">
-                  Category
-                </label>
-
-                <select
-                  name="category"
-                  value={formData.category}
-                  onChange={handleChange}
-                  required
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20"
+                <button
+                  type="button"
+                  onClick={handleChangeImage}
+                  disabled={saving}
+                  className="rounded-xl border border-[var(--color-primary)] px-5 py-3 font-semibold text-[var(--color-primary)] hover:bg-gray-50 disabled:opacity-60"
                 >
+                  Change Image
+                </button>
 
-                  <option value="">
-                    Select Category
-                  </option>
+              ) : (
 
-                  <option value="Mountain">
-                    Mountain
-                  </option>
+                <div className="space-y-4">
 
-                  <option value="Road">
-                    Road
-                  </option>
+                  {/* FILE INPUT */}
 
-                  <option value="Hybrid">
-                    Hybrid
-                  </option>
+                  <input
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleChange}
+                    required
+                    className="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 outline-none transition focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]"
+                  />
 
-                  <option value="Electric">
-                    Electric
-                  </option>
+                  {/* SELECTED FILE */}
 
-                  <option value="Kids">
-                    Kids
-                  </option>
+                  {formData.image && (
+                    <p className="text-sm text-gray-500">
+                      Selected: {formData.image.name}
+                    </p>
+                  )}
 
-                </select>
+                  {/* KEEP CURRENT IMAGE */}
 
-              </div>
+                  <button
+                    type="button"
+                    onClick={handleKeepCurrentImage}
+                    disabled={saving}
+                    className="rounded-xl border border-gray-300 px-4 py-2 font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-60"
+                  >
+                    Keep Current Image
+                  </button>
 
+                </div>
 
-              {/* ================= IMAGE ================= */}
-
-              <div>
-
-                <label className="mb-2 block text-sm font-semibold text-[var(--color-dark-blue)]">
-                  Image URL
-                </label>
-
-                <input
-                  type="url"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleChange}
-                  placeholder="Enter cycle image URL"
-                  className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                />
-
-              </div>
-
-
-              {/* ================= DESCRIPTION ================= */}
-
-              <div>
-
-                <label className="mb-2 block text-sm font-semibold text-[var(--color-dark-blue)]">
-                  Description
-                </label>
-
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  placeholder="Enter cycle description"
-                  rows={6}
-                  required
-                  className="w-full resize-none rounded-xl border border-gray-200 bg-gray-50 px-4 py-3.5 text-sm leading-6 outline-none transition focus:border-[var(--color-primary)] focus:bg-white focus:ring-2 focus:ring-[var(--color-primary)]/20"
-                />
-
-              </div>
+              )}
 
             </div>
 
+            {/* ================= DESCRIPTION ================= */}
 
-            {/* ================= BUTTONS ================= */}
+            <div>
+              <label className="mb-2 block font-medium text-[var(--color-text)]">
+                Description
+              </label>
 
-            <div className="mt-8 flex flex-col gap-3 border-t border-gray-100 pt-6 sm:flex-row">
-
-              {/* Cancel */}
-
-              <button
-                type="button"
-                onClick={() =>
-                  navigate("/admin/cycles")
-                }
-                disabled={saving}
-                className="flex-1 rounded-xl border border-gray-200 bg-white px-5 py-3.5 font-semibold text-gray-600 transition duration-200 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Cancel
-              </button>
-
-
-              {/* Update */}
-
-              <button
-                type="submit"
-                disabled={saving}
-                className="flex-1 rounded-xl bg-[var(--color-primary)] px-5 py-3.5 font-semibold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-[var(--color-dark-blue)] hover:shadow-lg disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {saving
-                  ? "Updating..."
-                  : "✓ Update Cycle"}
-              </button>
-
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                rows={5}
+                required
+                className="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary)]"
+              />
             </div>
+
+          </div>
+
+          {/* ================= BUTTONS ================= */}
+
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+
+            <button
+              type="button"
+              onClick={() => navigate("/admin/cycles")}
+              disabled={saving}
+              className="w-full rounded-xl border border-gray-300 px-5 py-3 font-semibold text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              disabled={saving}
+              className="w-full rounded-xl bg-[var(--color-primary)] px-5 py-3 font-semibold text-white hover:bg-[var(--color-dark-blue)] disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {saving
+                ? "Updating Cycle..."
+                : "Update Cycle"}
+            </button>
 
           </div>
 
         </form>
-
-
-        {/* ================= FOOTER NOTE ================= */}
-
-        <div className="mt-5 flex items-center justify-center gap-2 text-center text-xs text-gray-400">
-          <span>🚲</span>
-          <span>
-            Keep your CycleHub inventory up to date.
-          </span>
-        </div>
 
       </div>
 
@@ -471,4 +463,3 @@ function EditCycle() {
 }
 
 export default EditCycle;
-
