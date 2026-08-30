@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 
-// Images
+// Home page images
 import heroBanner from "../assets/images/hero-banner.jpg";
 import cityBike from "../assets/images/city-bike.jpg";
-import mountainBike from "../assets/images/mountain-bike.jpg";
+import mountainBike from "../assets/images/mountain-bike.png";
 import urbanCommute from "../assets/images/urban-commute.jpg";
 import performanceRoadBike from "../assets/images/performance-road-bike.jpg";
 import modernEBike from "../assets/images/modern-e-bike.jpg";
-import gravelAdventure from "../assets/images/gravel-adventure.png";
+import gravelAdventure from "../assets/images/gravel-bike-adventure.png";
 import familyCycleFun from "../assets/images/family-cycle-fun.jpg";
 import storefrontView from "../assets/images/storefront-view.jpg";
 
@@ -103,7 +103,7 @@ function Home() {
   return (
     <main className="bg-[var(--color-bg)] text-[var(--color-text)]">
 
-      {/* ================= HERO SECTION ================= */}
+      {/* HERO SECTION */}
       <section className="relative overflow-hidden bg-white">
 
         <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-[var(--color-secondary)] opacity-30 blur-3xl"></div>
@@ -186,7 +186,7 @@ function Home() {
           </div>
 
 
-          {/* ================= HERO IMAGE ================= */}
+          {/* HERO IMAGE */}
           <div className="relative">
 
             <div className="relative mx-auto flex h-[400px] max-w-lg items-center justify-center overflow-hidden rounded-[2rem] bg-gradient-to-br from-[var(--color-dark-blue)] via-[var(--color-primary)] to-[var(--color-secondary)] shadow-2xl">
@@ -194,8 +194,10 @@ function Home() {
               <img
                 src={heroBanner}
                 alt="Cycle Shop"
-                className="absolute inset-0 h-full w-full object-cover opacity-60"
+                className="absolute inset-0 h-full w-full object-cover"
               />
+
+              <div className="absolute inset-0 bg-black/10"></div>
 
               <div className="absolute inset-0 opacity-20">
 
@@ -205,9 +207,7 @@ function Home() {
 
               </div>
 
-              <div className="relative text-center">
-
-                <div className="text-9xl drop-shadow-2xl"></div>
+              <div className="relative z-10 text-center">
 
                 <div className="mt-5 rounded-2xl bg-white/95 px-6 py-4 shadow-xl backdrop-blur">
 
@@ -232,7 +232,7 @@ function Home() {
       </section>
 
 
-      {/* ================= BRAND STRIP ================= */}
+      {/* BRAND STRIP */}
       <section className="bg-[var(--color-dark-blue)] py-4">
 
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-5 text-sm font-bold tracking-wider text-white/80">
@@ -254,7 +254,7 @@ function Home() {
       </section>
 
 
-      {/* ================= CATEGORY SECTION ================= */}
+      {/* CATEGORY SECTION */}
       <section className="bg-white py-16 sm:py-20">
 
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -300,14 +300,14 @@ function Home() {
                 <img
                   src={category.image}
                   alt={category.title}
-                  className="absolute inset-0 h-full w-full object-cover opacity-50 transition duration-300 group-hover:scale-110"
+                  className="absolute inset-0 h-full w-full object-cover transition duration-300 group-hover:scale-110"
                 />
+
+                <div className="absolute inset-0 bg-[var(--color-dark-blue)]/45"></div>
 
                 <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-[var(--color-primary)] opacity-40 transition duration-300 group-hover:scale-150"></div>
 
-                <div className="relative flex h-full flex-col justify-between">
-
-                  <div className="text-4xl"></div>
+                <div className="relative flex h-full min-h-36 flex-col justify-end">
 
                   <div>
 
@@ -334,7 +334,7 @@ function Home() {
       </section>
 
 
-      {/* ================= FEATURED SECTION ================= */}
+      {/* FEATURED SECTION */}
       <section className="bg-[var(--color-bg)] py-16 sm:py-20">
 
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -425,7 +425,7 @@ function Home() {
       </section>
 
 
-      {/* ================= THREE STEPS ================= */}
+      {/* THREE STEPS */}
       <section className="relative overflow-hidden bg-[var(--color-dark-blue)] py-16 sm:py-20">
 
         <div className="absolute inset-0 opacity-10">
@@ -495,7 +495,7 @@ function Home() {
       </section>
 
 
-      {/* ================= FEATURES ================= */}
+      {/* FEATURES */}
       <section className="bg-white py-16 sm:py-20">
 
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -545,23 +545,22 @@ function Home() {
       </section>
 
 
-      {/* ================= EXPERIENCE SECTION ================= */}
+      {/* EXPERIENCE SECTION */}
       <section className="bg-[var(--color-bg)] py-16 sm:py-20">
 
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 md:grid-cols-2">
 
           <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden rounded-[2rem] bg-[var(--color-dark-blue)] shadow-2xl">
 
-            {/* Experience Image */}
             <img
               src={storefrontView}
               alt="Cycle Ride"
-              className="absolute inset-0 h-full w-full object-cover opacity-60"
+              className="absolute inset-0 h-full w-full object-cover"
             />
 
-            <div className="relative text-center">
+            <div className="absolute inset-0 bg-[var(--color-dark-blue)]/30"></div>
 
-              <div className="text-8xl"></div>
+            <div className="relative z-10 text-center">
 
               <div className="mt-5 rounded-xl bg-white px-5 py-3">
 
@@ -600,21 +599,27 @@ function Home() {
             <div className="mt-7 space-y-3">
 
               <div className="rounded-xl border border-blue-100 bg-white p-4 shadow-sm">
+
                 <p className="font-bold text-[var(--color-dark-blue)]">
                   ✓ Find the right cycle
                 </p>
+
               </div>
 
               <div className="rounded-xl border border-blue-100 bg-white p-4 shadow-sm">
+
                 <p className="font-bold text-[var(--color-dark-blue)]">
                   ✓ Check availability easily
                 </p>
+
               </div>
 
               <div className="rounded-xl border border-blue-100 bg-white p-4 shadow-sm">
+
                 <p className="font-bold text-[var(--color-dark-blue)]">
                   ✓ Manage your orders
                 </p>
+
               </div>
 
             </div>
@@ -633,7 +638,7 @@ function Home() {
       </section>
 
 
-      {/* ================= TESTIMONIALS ================= */}
+      {/* TESTIMONIALS */}
       <section className="bg-white py-16 sm:py-20">
 
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -718,7 +723,7 @@ function Home() {
       </section>
 
 
-      {/* ================= FINAL CTA ================= */}
+      {/* FINAL CTA */}
       <section className="bg-[var(--color-bg)] px-5 py-12 sm:px-8">
 
         <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[var(--color-dark-blue)] p-8 shadow-2xl sm:p-12">
