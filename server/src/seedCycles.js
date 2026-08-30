@@ -4,10 +4,23 @@ import Cycle from "./models/Cycle.js";
 
 dotenv.config();
 
+/*
+|--------------------------------------------------------------------------
+| Cycle Seed Data
+|--------------------------------------------------------------------------
+| This file creates sample cycle records in MongoDB.
+| There are 4 categories:
+| Mountain, Road, Hybrid and Electric.
+|
+| Each category contains exactly 4 cycles.
+|--------------------------------------------------------------------------
+*/
+
 const cycles = [
-  // =========================
+
+  // ============================================================
   // MOUNTAIN BIKES
-  // =========================
+  // ============================================================
 
   {
     name: "Mountain Explorer 29",
@@ -25,7 +38,7 @@ const cycles = [
     description:
       "A durable mountain cycle with comfortable handling for challenging trails.",
     price: 28999,
-    image: "gravel-bike-adventure.png",
+    image: "mountain-pro-trails.jpg",
     category: "Mountain",
     stock: 12,
     brand: "Firefox",
@@ -36,7 +49,7 @@ const cycles = [
     description:
       "A reliable mountain bike built for weekend adventures and off-road riding.",
     price: 21999,
-    image: "performance-road-bike.jpg",
+    image: "mountain-xc-hardtail.jpg",
     category: "Mountain",
     stock: 18,
     brand: "Hero",
@@ -47,16 +60,16 @@ const cycles = [
     description:
       "A performance-focused mountain bike suitable for trails and adventure rides.",
     price: 31999,
-    image: "mountain-bike.png",
+    image: "mountain-downhill.jpg",
     category: "Mountain",
     stock: 10,
     brand: "Giant",
   },
 
 
-  // =========================
+  // ============================================================
   // ROAD BIKES
-  // =========================
+  // ============================================================
 
   {
     name: "Speed Road 700",
@@ -74,7 +87,7 @@ const cycles = [
     description:
       "A fast road bike designed for riders who enjoy speed and long-distance rides.",
     price: 35999,
-    image: "modern-e-bike.jpg",
+    image: "performance-carbon-race.jpg",
     category: "Road",
     stock: 9,
     brand: "Scott",
@@ -85,7 +98,7 @@ const cycles = [
     description:
       "A comfortable and efficient road bike for everyday fitness and long rides.",
     price: 27999,
-    image: "performance-road-bike.jpg",
+    image: "performance-endurance-road.jpg",
     category: "Road",
     stock: 16,
     brand: "Giant",
@@ -96,16 +109,16 @@ const cycles = [
     description:
       "A stylish road cycle with smooth performance for fitness and professional riding.",
     price: 38999,
-    image: "city-bike.jpg",
+    image: "performance-classic-steel.jpg",
     category: "Road",
     stock: 8,
     brand: "Firefox",
   },
 
 
-  // =========================
+  // ============================================================
   // HYBRID BIKES
-  // =========================
+  // ============================================================
 
   {
     name: "Urban Hybrid 500",
@@ -123,7 +136,7 @@ const cycles = [
     description:
       "A comfortable hybrid bicycle made for smooth daily commuting and leisure rides.",
     price: 22999,
-    image: "city-bike.jpg",
+    image: "city-sport-hybrid.jpg",
     category: "Hybrid",
     stock: 17,
     brand: "Firefox",
@@ -134,7 +147,7 @@ const cycles = [
     description:
       "A practical hybrid bike offering comfort and control for everyday journeys.",
     price: 24999,
-    image: "urban-commute.jpg",
+    image: "city-urban-utility.jpg",
     category: "Hybrid",
     stock: 13,
     brand: "Trek",
@@ -145,23 +158,23 @@ const cycles = [
     description:
       "A flexible hybrid cycle suitable for city roads, parks and weekend rides.",
     price: 26999,
-    image: "family-cycle-fun.jpg",
+    image: "city-classic-step-through.jpg",
     category: "Hybrid",
     stock: 11,
     brand: "Giant",
   },
 
 
-  // =========================
+  // ============================================================
   // ELECTRIC BIKES
-  // =========================
+  // ============================================================
 
   {
     name: "Electric Ride 500",
     description:
       "A modern electric bicycle designed for comfortable and effortless city commuting.",
     price: 44999,
-    image: "modern-e-bike.jpg",
+    image: "electric-urban-commuter.jpg",
     category: "Electric",
     stock: 10,
     brand: "Hero",
@@ -172,7 +185,7 @@ const cycles = [
     description:
       "A stylish electric cycle designed for efficient everyday transportation.",
     price: 49999,
-    image: "modern-e-bike.jpg",
+    image: "electric-folding-e-bike.jpg",
     category: "Electric",
     stock: 8,
     brand: "Firefox",
@@ -183,7 +196,7 @@ const cycles = [
     description:
       "A comfortable electric bicycle with smooth riding performance for city travel.",
     price: 52999,
-    image: "modern-e-bike.jpg",
+    image: "electric-mountain-pro.jpg",
     category: "Electric",
     stock: 7,
     brand: "Trek",
@@ -202,40 +215,85 @@ const cycles = [
 ];
 
 
+/*
+|--------------------------------------------------------------------------
+| Seed Cycles Function
+|--------------------------------------------------------------------------
+*/
+
 const seedCycles = async () => {
   try {
+
+    // Connect to MongoDB
     await mongoose.connect(process.env.MONGODB_URL);
 
     console.log("MongoDB connected");
 
+
+    // Remove old cycle records
     await Cycle.deleteMany({});
 
     console.log("Old cycles removed");
 
+
+    // Insert new cycle records
     const createdCycles = await Cycle.insertMany(cycles);
 
     console.log(
       `${createdCycles.length} cycles inserted successfully`
     );
 
-    console.log("Mountain: 4");
-    console.log("Road: 4");
-    console.log("Hybrid: 4");
-    console.log("Electric: 4");
 
+    // Display category count
+    const mountainCount = cycles.filter(
+      (cycle) => cycle.category === "Mountain"
+    ).length;
+
+    const roadCount = cycles.filter(
+      (cycle) => cycle.category === "Road"
+    ).length;
+
+    const hybridCount = cycles.filter(
+      (cycle) => cycle.category === "Hybrid"
+    ).length;
+
+    const electricCount = cycles.filter(
+      (cycle) => cycle.category === "Electric"
+    ).length;
+
+
+    console.log("--------------------------------");
+    console.log(`Mountain: ${mountainCount}`);
+    console.log(`Road: ${roadCount}`);
+    console.log(`Hybrid: ${hybridCount}`);
+    console.log(`Electric: ${electricCount}`);
+    console.log("--------------------------------");
+
+
+    // Close MongoDB connection
     await mongoose.connection.close();
 
     console.log("Database connection closed");
 
     process.exit(0);
+
   } catch (error) {
+
     console.error("Seed failed:", error.message);
 
-    await mongoose.connection.close();
+    if (mongoose.connection.readyState !== 0) {
+      await mongoose.connection.close();
+    }
 
     process.exit(1);
   }
 };
 
+
+/*
+|--------------------------------------------------------------------------
+| Run Seeder
+|--------------------------------------------------------------------------
+*/
 
 seedCycles();
