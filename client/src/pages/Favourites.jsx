@@ -17,7 +17,41 @@ function Favourites() {
 
   const [error, setError] = useState("");
 
+  // ================= IMAGE URL =================
+
+  const getImageUrl = (image) => {
+    if (!image) {
+      return "";
+    }
+
+    // If backend already returns a complete URL
+    if (
+      image.startsWith("http://") ||
+      image.startsWith("https://")
+    ) {
+      return image;
+    }
+
+    const apiUrl = import.meta.env.VITE_API_URL || "";
+
+    // Remove /api from API URL
+    const serverUrl = apiUrl.replace(/\/api\/?$/, "");
+
+    // If image already contains /uploads/
+    if (image.startsWith("/uploads/")) {
+      return `${serverUrl}${image}`;
+    }
+
+    if (image.startsWith("uploads/")) {
+      return `${serverUrl}/${image}`;
+    }
+
+    // Normal image filename
+    return `${serverUrl}/uploads/${image}`;
+  };
+
   // ================= GET FAVOURITES =================
+
   useEffect(() => {
     fetchFavourites();
   }, []);
@@ -29,7 +63,6 @@ function Favourites() {
 
       const response = await getFavourites();
 
-      // Backend returns "cycles"
       setFavourites(response.cycles || []);
     } catch (error) {
       setError(
@@ -42,6 +75,7 @@ function Favourites() {
   };
 
   // ================= REMOVE FAVOURITE =================
+
   const handleRemove = async (cycleId) => {
     try {
       setActionLoading(true);
@@ -49,7 +83,6 @@ function Favourites() {
 
       await removeFavourite(cycleId);
 
-      // Remove from UI
       setFavourites((previous) =>
         previous.filter(
           (cycle) => cycle._id !== cycleId
@@ -66,10 +99,10 @@ function Favourites() {
   };
 
   // ================= LOADING =================
+
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-4">
-
         <div className="text-center">
 
           <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-3xl shadow-lg">
@@ -83,12 +116,12 @@ function Favourites() {
           </p>
 
         </div>
-
       </main>
     );
   }
 
   // ================= ERROR =================
+
   if (error && favourites.length === 0) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[var(--color-bg)] px-4">
@@ -121,6 +154,7 @@ function Favourites() {
   }
 
   // ================= EMPTY =================
+
   if (favourites.length === 0) {
     return (
       <main className="min-h-screen bg-[var(--color-bg)] px-4 py-12 sm:px-6 lg:px-8">
@@ -177,6 +211,7 @@ function Favourites() {
   }
 
   // ================= FAVOURITES PAGE =================
+
   return (
     <main className="min-h-screen bg-[var(--color-bg)] px-4 py-10 sm:px-6 lg:px-8">
 
@@ -266,11 +301,20 @@ function Favourites() {
 
                 <div className="relative h-60 overflow-hidden bg-[var(--color-bg)]">
 
-                  <img
-                    src={`${import.meta.env.VITE_API_URL.replace("/api", "")}/uploads/${cycle.image}`}
-                    alt={cycle.name}
-                    className="h-full w-full object-contain p-3 transition duration-500 group-hover:scale-105"
-                  />
+                  {cycle.image ? (
+                    <img
+                      src={getImageUrl(cycle.image)}
+                      alt={cycle.name || "Cycle"}
+                      className="h-full w-full object-contain p-3 transition duration-500 group-hover:scale-105"
+                      onError={(event) => {
+                        event.currentTarget.style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-sm text-gray-400">
+                      No Image
+                    </div>
+                  )}
 
                   {/* Favourite Badge */}
 
