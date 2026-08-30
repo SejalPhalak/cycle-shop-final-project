@@ -103,7 +103,7 @@ function Home() {
   return (
     <main className="bg-[var(--color-bg)] text-[var(--color-text)]">
 
-      {/* HERO SECTION */}
+      {/* ================= HERO SECTION ================= */}
       <section className="relative overflow-hidden bg-white">
 
         <div className="absolute -right-32 -top-32 h-96 w-96 rounded-full bg-[var(--color-secondary)] opacity-30 blur-3xl"></div>
@@ -155,7 +155,6 @@ function Home() {
                 <p className="text-2xl font-black text-[var(--color-primary)]">
                   100+
                 </p>
-
                 <p className="mt-1 text-xs text-gray-500">
                   Cycles
                 </p>
@@ -165,7 +164,6 @@ function Home() {
                 <p className="text-2xl font-black text-[var(--color-primary)]">
                   15+
                 </p>
-
                 <p className="mt-1 text-xs text-gray-500">
                   Brands
                 </p>
@@ -175,7 +173,6 @@ function Home() {
                 <p className="text-2xl font-black text-[var(--color-primary)]">
                   4.9
                 </p>
-
                 <p className="mt-1 text-xs text-gray-500">
                   User Rating
                 </p>
@@ -186,7 +183,7 @@ function Home() {
           </div>
 
 
-          {/* HERO IMAGE */}
+          {/* ================= HERO IMAGE ================= */}
           <div className="relative">
 
             <div className="relative mx-auto flex h-[400px] max-w-lg items-center justify-center overflow-hidden rounded-[2rem] bg-gradient-to-br from-[var(--color-dark-blue)] via-[var(--color-primary)] to-[var(--color-secondary)] shadow-2xl">
@@ -207,9 +204,13 @@ function Home() {
 
               </div>
 
+              {/* Starts Here Button */}
               <div className="relative z-10 text-center">
 
-                <div className="mt-5 rounded-2xl bg-white/95 px-6 py-4 shadow-xl backdrop-blur">
+                <Link
+                  to="/cycles"
+                  className="block rounded-2xl bg-white/95 px-6 py-4 shadow-xl backdrop-blur transition duration-300 hover:-translate-y-1 hover:bg-white"
+                >
 
                   <p className="text-xs font-semibold uppercase tracking-widest text-gray-500">
                     Your next adventure
@@ -219,7 +220,7 @@ function Home() {
                     Starts Here
                   </p>
 
-                </div>
+                </Link>
 
               </div>
 
@@ -232,7 +233,7 @@ function Home() {
       </section>
 
 
-      {/* BRAND STRIP */}
+      {/* ================= BRAND STRIP ================= */}
       <section className="bg-[var(--color-dark-blue)] py-4">
 
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-center gap-x-10 gap-y-3 px-5 text-sm font-bold tracking-wider text-white/80">
@@ -254,7 +255,7 @@ function Home() {
       </section>
 
 
-      {/* CATEGORY SECTION */}
+      {/* ================= CATEGORY SECTION ================= */}
       <section className="bg-white py-16 sm:py-20">
 
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -305,8 +306,6 @@ function Home() {
 
                 <div className="absolute inset-0 bg-[var(--color-dark-blue)]/45"></div>
 
-                <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-[var(--color-primary)] opacity-40 transition duration-300 group-hover:scale-150"></div>
-
                 <div className="relative flex h-full min-h-36 flex-col justify-end">
 
                   <div>
@@ -334,7 +333,7 @@ function Home() {
       </section>
 
 
-      {/* FEATURED SECTION */}
+      {/* ================= FEATURED SECTION ================= */}
       <section className="bg-[var(--color-bg)] py-16 sm:py-20">
 
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -376,7 +375,6 @@ function Home() {
                 className="group overflow-hidden rounded-3xl bg-white shadow-md transition duration-300 hover:-translate-y-2 hover:shadow-2xl"
               >
 
-                {/* Featured Image */}
                 <div className="flex h-60 items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100">
 
                   <img
@@ -425,7 +423,7 @@ function Home() {
       </section>
 
 
-      {/* THREE STEPS */}
+      {/* ================= THREE STEPS ================= */}
       <section className="relative overflow-hidden bg-[var(--color-dark-blue)] py-16 sm:py-20">
 
         <div className="absolute inset-0 opacity-10">
@@ -495,7 +493,7 @@ function Home() {
       </section>
 
 
-      {/* FEATURES */}
+      {/* ================= FEATURES ================= */}
       <section className="bg-white py-16 sm:py-20">
 
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -545,7 +543,7 @@ function Home() {
       </section>
 
 
-      {/* EXPERIENCE SECTION */}
+      {/* ================= EXPERIENCE SECTION ================= */}
       <section className="bg-[var(--color-bg)] py-16 sm:py-20">
 
         <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 sm:px-8 md:grid-cols-2">
@@ -559,18 +557,6 @@ function Home() {
             />
 
             <div className="absolute inset-0 bg-[var(--color-dark-blue)]/30"></div>
-
-            <div className="relative z-10 text-center">
-
-              <div className="mt-5 rounded-xl bg-white px-5 py-3">
-
-                <p className="font-bold text-[var(--color-dark-blue)]">
-                  Ride your way.
-                </p>
-
-              </div>
-
-            </div>
 
           </div>
 
@@ -599,27 +585,21 @@ function Home() {
             <div className="mt-7 space-y-3">
 
               <div className="rounded-xl border border-blue-100 bg-white p-4 shadow-sm">
-
                 <p className="font-bold text-[var(--color-dark-blue)]">
                   ✓ Find the right cycle
                 </p>
-
               </div>
 
               <div className="rounded-xl border border-blue-100 bg-white p-4 shadow-sm">
-
                 <p className="font-bold text-[var(--color-dark-blue)]">
                   ✓ Check availability easily
                 </p>
-
               </div>
 
               <div className="rounded-xl border border-blue-100 bg-white p-4 shadow-sm">
-
                 <p className="font-bold text-[var(--color-dark-blue)]">
                   ✓ Manage your orders
                 </p>
-
               </div>
 
             </div>
@@ -638,7 +618,7 @@ function Home() {
       </section>
 
 
-      {/* TESTIMONIALS */}
+      {/* ================= TESTIMONIALS ================= */}
       <section className="bg-white py-16 sm:py-20">
 
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
@@ -723,7 +703,7 @@ function Home() {
       </section>
 
 
-      {/* FINAL CTA */}
+      {/* ================= FINAL CTA ================= */}
       <section className="bg-[var(--color-bg)] px-5 py-12 sm:px-8">
 
         <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-[var(--color-dark-blue)] p-8 shadow-2xl sm:p-12">
