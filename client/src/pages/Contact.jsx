@@ -2,7 +2,9 @@
 import React from "react";
 
 function Contact() {
-  return (
+const handleSubmit = () => {
+  alert("We will connect you soon!");
+};  return (
     <div className="min-h-screen bg-[var(--color-bg)] px-4 py-12 sm:px-6 lg:px-8">
 
       <div className="mx-auto max-w-6xl">
@@ -210,6 +212,7 @@ function Contact() {
 
               <button
                 type="submit"
+                onClick={handleSubmit}
                 className="w-full rounded-xl bg-[var(--color-primary)] px-6 py-3.5 font-semibold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-[var(--color-dark-blue)] hover:shadow-lg"
               >
                 Send Message →
