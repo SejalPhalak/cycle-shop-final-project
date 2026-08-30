@@ -1,196 +1,83 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import express from "express";
 
-// Components
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
-import ProtectedRoute from "./components/ProtectedRoute";
-import GuestRoute from "./components/GuestRoute";
-import AdminRoute from "./components/AdminRoute";
+import cors from "cors";
 
-// Public Pages
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Cycles from "./pages/Cycles";
-import CycleDetails from "./pages/CycleDetails";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
+import path from "path";
 
-// User Pages
-import Favourites from "./pages/Favourites";
-import Cart from "./pages/Cart";
-import Checkout from "./pages/Checkout";
-import Orders from "./pages/Orders";
-import OrderDetails from "./pages/OrderDetails";
+import { fileURLToPath } from "url";
 
-// Admin Pages
-import AdminCycles from "./pages/AdminCycles";
-import AddCycle from "./pages/AddCycle";
-import EditCycle from "./pages/EditCycle";
+import authRoutes from "./routes/auth.routes.js";
 
-function App() {
-  return (
-    <BrowserRouter>
+import cycleRoutes from "./routes/cycle.routes.js";
 
-      <Navbar />
+import favouriteRoutes from "./routes/favourite.routes.js";
 
-      <Routes>
+import cartRoutes from "./routes/cart.routes.js";
 
-        {/* Public Routes */}
+import orderRoutes from "./routes/order.routes.js";
 
-        <Route
-          path="/"
-          element={<Home />}
-        />
+import notFound from "./middleware/notFound.middleware.js";
 
-        <Route
-          path="/cycles"
-          element={<Cycles />}
-        />
+import errorMiddleware from "./middleware/error.middleware.js";
 
-        <Route
-          path="/cycles/:id"
-          element={<CycleDetails />}
-        />
+const app = express();
 
-        <Route
-          path="/about"
-          element={<About />}
-        />
+// ================= PATH SETUP =================
 
-        <Route
-          path="/contact"
-          element={<Contact />}
-        />
+const __filename = fileURLToPath(import.meta.url);
 
+const __dirname = path.dirname(__filename);
 
-        {/* Guest Routes */}
+// ================= MIDDLEWARE =================
 
-        <Route element={<GuestRoute />}>
+app.use(cors());
 
-          <Route
-            path="/login"
-            element={<Login />}
-          />
+app.use(express.json());
 
-          <Route
-            path="/register"
-            element={<Register />}
-          />
+// ================= STATIC UPLOADS =================
 
-        </Route>
+// Serve images from server/src/uploads
 
+app.use(
 
-        {/* Protected User Routes */}
+  "/uploads",
 
-        <Route element={<ProtectedRoute />}>
+  express.static(path.join(__dirname, "uploads"))
 
-          <Route
-            path="/favourites"
-            element={<Favourites />}
-          />
+);
 
-          <Route
-            path="/cart"
-            element={<Cart />}
-          />
+// ================= HOME =================
 
-          <Route
-            path="/checkout"
-            element={<Checkout />}
-          />
+app.get("/", (req, res) => {
 
-          <Route
-            path="/orders"
-            element={<Orders />}
-          />
+  res.json({
 
-          <Route
-            path="/orders/:id"
-            element={<OrderDetails />}
-          />
+    success: true,
 
-        </Route>
+    message: "Cycle Shop API is running",
 
+  });
 
-        {/* Admin Routes */}
+});
 
-        <Route element={<AdminRoute />}>
+// ================= ROUTES =================
 
-          <Route
-            path="/admin/cycles"
-            element={<AdminCycles />}
-          />
+app.use("/api/auth", authRoutes);
 
-          <Route
-            path="/admin/cycles/add"
-            element={<AddCycle />}
-          />
+app.use("/api/cycles", cycleRoutes);
 
-          <Route
-            path="/admin/cycles/edit/:id"
-            element={<EditCycle />}
-          />
+app.use("/api/favourites", favouriteRoutes);
 
-        </Route>
+app.use("/api/cart", cartRoutes);
 
+app.use("/api/orders", orderRoutes);
 
-        {/* 404 Page */}
+// ================= 404 =================
 
-        <Route
-          path="*"
-          element={
-            <div className="flex min-h-[calc(100vh-64px)] items-center justify-center bg-[var(--color-bg)] px-4">
+app.use(notFound);
 
-              <div className="w-full max-w-md rounded-3xl bg-white p-10 text-center shadow-xl">
+// ================= ERROR =================
 
-                <div className="mb-4 text-6xl">
-                  🚲
-                </div>
+app.use(errorMiddleware);
 
-                <h1 className="text-7xl font-extrabold text-[var(--color-primary)]">
-                  404
-                </h1>
-
-                <h2 className="mt-4 text-2xl font-bold text-[var(--color-dark-blue)]">
-                  Page Not Found
-                </h2>
-
-                <p className="mt-2 text-[var(--color-text)]">
-                  The page you are looking for does not exist.
-                </p>
-
-                <button
-                  onClick={() => {
-                    window.location.href = "/";
-                  }}
-                  className="mt-7 rounded-xl bg-[var(--color-primary)] px-7 py-3 font-semibold text-white shadow-md transition duration-300 hover:bg-[var(--color-dark-blue)] hover:shadow-lg"
-                >
-                  Go Home
-                </button>
-
-              </div>
-
-            </div>
-          }
-        />
-
-      </Routes>
-
-      {/* Footer */}
-      <Footer />
-
-    </BrowserRouter>
-  );
-}
-
-export default App;
-/**
- * Process component logic for App.jsx
- */
-
-// update code for App.jsx
-
-// update code for App.jsx
-
-// update code for App.jsx
+export default app;
